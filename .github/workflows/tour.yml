@@ -1,8 +1,20 @@
 name: tour
-# The Bash# tour gate against the LATEST bashy release, on all three OSes.
+# The Bash# tour gate against a PUBLISHED bashy release, on all three OSes.
 # This is the install-matrix: a stranger's machine, the published binary,
 # every chapter diffed against its pinned transcript. Optional chapters
 # SKIP by name when a runner lacks the tool; the job still requires 0 failed.
+#
+# Which release: the latest non-prerelease by default (push / PR / nightly —
+# the badge is the LATEST release's standing), or the tag given to a manual
+# run (`gh workflow run tour -f tag=v0.23.0-dev`) to prove a prerelease
+# before it is promoted. The tour's minimum is the first --bashsharp release;
+# against anything older the gate is red by design, not broken.
+#
+# Windows runs the gate through bashy itself: a Windows user has no /bin/sh
+# for the shebang, and Git bash is not on their machine either. Git bash
+# would also hand bashy.exe a POSIX-spelled TMP, which broke `mktemp -d`
+# inside the judge (2026-09-18). The unix legs run it the way the README
+# says — `./check.sh`, the host's /bin/sh — so both spellings are covered.
 on:
   push:
   pull_request:
@@ -11,9 +23,11 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'bashy release tag to test (default: the latest release); a -dev prerelease is how release QA runs this gate before promotion'
+        description: "bashy release tag to test (default: latest non-prerelease)"
         required: false
-        default: ''
+        default: ""
+permissions:
+  contents: read
 jobs:
   tour:
     strategy:
@@ -27,28 +41,44 @@ jobs:
           - os: windows-latest
             asset: bashy-windows-amd64.zip
     runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
+    env:
+      TAG: ${{ github.event.inputs.tag }}
     steps:
       - uses: actions/checkout@v4
+
+      # ── unix: download, then the gate under /bin/sh, as the README says ──
       - name: Download the bashy release asset
+        if: runner.os != 'Windows'
+        shell: bash
         run: |
-          tag='${{ github.event.inputs.tag }}'
-          if [ -n "$tag" ]; then url="https://github.com/qiangli/bashy/releases/download/$tag/${{ matrix.asset }}"
+          if [ -n "$TAG" ]; then url="https://github.com/qiangli/bashy/releases/download/$TAG/${{ matrix.asset }}"
           else url="https://github.com/qiangli/bashy/releases/latest/download/${{ matrix.asset }}"; fi
-          echo "asset: $url"
+          echo "$url"
           curl -fsSLO "$url"
-          case "${{ matrix.asset }}" in
-            *.zip) unzip -o "${{ matrix.asset }}" ;;
-            *) tar -xzf "${{ matrix.asset }}" ;;
-          esac
-          ls -l bashy* 
-      - name: Version
-        run: |
-          bin=./bashy; [ -f ./bashy.exe ] && bin=./bashy.exe
-          "$bin" --version
+          tar -xzf "${{ matrix.asset }}"
+          ./bashy --version
       - name: Tour gate
+        if: runner.os != 'Windows'
+        shell: bash
+        run: ./check.sh ./bashy
+
+      # ── windows: only what Windows ships (curl.exe, tar.exe); bashy is the shell ──
+      - name: Download the bashy release asset (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
         run: |
-          bin=./bashy; [ -f ./bashy.exe ] && bin=./bashy.exe
-          ./check.sh "$bin"
+          if ($env:TAG) { $url = "https://github.com/qiangli/bashy/releases/download/$env:TAG/${{ matrix.asset }}" }
+          else { $url = "https://github.com/qiangli/bashy/releases/latest/download/${{ matrix.asset }}" }
+          Write-Host $url
+          & curl.exe -fsSLO $url
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & tar.exe -xf "${{ matrix.asset }}"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & .\bashy.exe --version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Tour gate (Windows, through bashy)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          & .\bashy.exe ./check.sh "$PWD\bashy.exe"
+          exit $LASTEXITCODE
