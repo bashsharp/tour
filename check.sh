@@ -29,7 +29,8 @@ if [ -z "$flag" ]; then
     else flag=--bashsharp; fi
 fi
 noflag=--no-${flag#--}
-pass=0; fail=0; skip=0; rc=0
+pass=0; fail=0; skip=0; xfail=0; rc=0
+osname=$(uname -s 2>/dev/null | tr 'A-Z' 'a-z'); case "$osname" in linux|darwin) ;; *) osname=windows ;; esac
 
 have() { command -v "$1" >/dev/null 2>&1; }
 # The TypeScript compiler module, if any: $BASHPP_TYPESCRIPT_MODULE or the global npm one.
@@ -70,10 +71,18 @@ invoke() { # mode file -> runs in the file's directory, prints stdout+stderr, re
     check) (cd "$dir" && "$bashy" check "$flag" "$base" 2>&1) ;;
     esac
 }
-report() { # id expected-file actual-text actual-rc expected-rc
+report() { # id expected-file actual-text actual-rc expected-rc xfail-spec
     want=$(sed 1d "$2")
+    xf=""; case "${6:-}" in "$osname="*) xf=${6#*=} ;; esac
     if [ "$3" = "$want" ] && [ "$4" -eq "$5" ]; then
-        echo "tour: PASS $1"; pass=$((pass+1))
+        if [ -n "$xf" ]; then
+            echo "tour: XPASS $1 — marked xfail on $osname ($xf) but PASSED: remove the marker" >&2
+            fail=$((fail+1)); rc=1
+        else
+            echo "tour: PASS $1"; pass=$((pass+1))
+        fi
+    elif [ -n "$xf" ]; then
+        echo "tour: XFAIL $1 (known on $osname: $xf; exit $4)"; xfail=$((xfail+1))
     else
         echo "tour: FAIL $1 (exit $4, expected $5; $bashy $flag)" >&2
         printf '%s\n' "$3" | diff -u "$2" - >&2 || true
@@ -81,7 +90,7 @@ report() { # id expected-file actual-text actual-rc expected-rc
     fi
 }
 
-while IFS="$(printf '\t')" read -r id mode file needs want_rc; do
+while IFS="$(printf '\t')" read -r id mode file needs want_rc xfail_spec; do
     case "$id" in ''|'#'*) continue ;; esac
     exp="$here/${file%.*}.expected"
     [ "$mode" = off ] && exp="$here/${file%.*}.off.expected"
@@ -91,7 +100,7 @@ while IFS="$(printf '\t')" read -r id mode file needs want_rc; do
     if [ "$pin" -eq 1 ]; then
         { printf '# rc=%s\n' "$got"; printf '%s\n' "$out"; } > "$exp"; echo "tour: PINNED $id (rc=$got)"; continue
     fi
-    report "$id" "$exp" "$out" "$got" "$want_rc"
+    report "$id" "$exp" "$out" "$got" "$want_rc" "${xfail_spec:-}"
 done < "$here/cases.tsv"
 
 # The lowered build of 03-go/04-transpile.bsh: needs go >= 1.27 on PATH and a
@@ -116,5 +125,5 @@ if [ "$pin" -eq 0 ]; then
 fi
 
 [ "$pin" -eq 1 ] && exit 0
-echo "tour: $pass passed, $fail failed, $skip skipped ($("$bashy" --version 2>/dev/null | head -1))"
+echo "tour: $pass passed, $fail failed, $skip skipped, $xfail known-failing ($("$bashy" --version 2>/dev/null | head -1))"
 exit $rc
