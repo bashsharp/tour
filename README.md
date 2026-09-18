@@ -8,12 +8,13 @@ library, and `agentic` where you need a model — with contracts so a model's
 output is judged, never trusted.* It runs inside [`bashy`](https://github.com/qiangli/bashy),
 a pure-Go Bash 5.3 that runs on Linux, macOS and Windows.
 
-> **Alpha.** Everything in this repo runs on the bashy release that carries
-> the Bash# rename (the first `--bashsharp` release) and later; on v0.22.0
-> and earlier, chapters that use contracts, decorators, `--source=go` or the
-> bash/sh islands fail, and the [CI badge](https://github.com/qiangli/bashsharp-tour/actions)
-> shows exactly which against the latest release on Linux, macOS and
-> Windows. Syntax may still change before 1.0, and the way to change it is an RFC in the
+> **Alpha.** Everything in this repo runs on **bashy v0.23.0** (the first
+> Bash# release) and later — the [CI badge](https://github.com/qiangli/bashsharp-tour/actions)
+> is this gate against the latest release on Linux, macOS and Windows, and
+> it is green (Windows carries four *known-failing* fenced-island cases,
+> named by card, for toolchains the shell cannot yet drive there — see
+> [§ What the gate says on your machine](#what-the-gate-says-on-your-machine)).
+> Syntax may still change before 1.0, and the way to change it is an RFC in the
 > language repo, [`qiangli/bashsharp`](https://github.com/qiangli/bashsharp).
 > If something here does not match what your binary does, that is a bug in
 > one of them — [open an issue](https://github.com/qiangli/bashsharp-tour/issues)
@@ -61,12 +62,37 @@ bashy --version        # bashy, GNU Bash 5.3 compatible, version 5.3.0(1)-bashy-
 
 The full asset list (six platforms, checksums) is on the
 [Releases page](https://github.com/qiangli/bashy/releases/latest). Nothing
-else is required for the tour. Two optional chapters use tools you may
-already have: the language islands (Python, TypeScript, Rust, C/C++, Go) use
-*your* installed compilers — C and C++ specifically need **clang** (the
-island is analysed through Clang's AST; a GCC `cc` cannot serve it) — and the
-"back out as Go" step needs Go ≥ 1.27.
-`./check.sh` tells you exactly which it found.
+else is required for the tour itself — every required chapter runs offline
+on the binary alone, verified on a Windows 11 machine with no git, no Go and
+no C compiler, on a Mac with only the system tools, and on a bare Ubuntu
+droplet.
+
+Optional chapters use tools you may already have, and `./check.sh` says
+exactly which it found and skips the rest by name:
+
+| chapter | needs |
+|---|---|
+| `03-go/03-whole-program.go` (`--source=go`) and the Go island | a Go SDK **≥ 1.27** on `PATH` |
+| the Python island | `python3` (a real interpreter — on Windows the Microsoft Store *alias* named `python3` is not enough) |
+| the TypeScript island | `node` and the `typescript` npm package (`npm install -g typescript`) |
+| the Rust island | `cargo` |
+| the C and C++ islands | **clang** — the island is analysed through Clang's AST; a GCC `cc` cannot serve it |
+| the lowered build of `04-transpile` | Go ≥ 1.27 and a checkout of `qiangli/sh` (`BASHSHARP_SH_ROOT`) |
+
+If your shell refuses a command with an "unsupported locale" message, set
+`LC_ALL=C.UTF-8`: bashy carries `C.UTF-8` (any platform) and the macOS default
+`en_US.UTF-8`; other UTF-8 locales are not carried yet.
+
+### What the gate says on your machine
+
+`./check.sh` (on Windows: `bashy ./check.sh`) ends with one line:
+`tour: N passed, F failed, S skipped, K known-failing`. **`failed` must be 0.**
+`skipped` names a tool you don't have. `known-failing` appears only on
+Windows for the fenced islands that need a toolchain bashy cannot yet drive
+there (the Store `python3` alias; `rustc` linking through bashy's `link`
+applet instead of MSVC's; clang without SDK include paths) — tracked, named
+in the output, and turned into a hard failure the day they start passing so
+the marker cannot rot.
 
 ## Step by step
 
@@ -130,6 +156,16 @@ for *why* each new shape is safe.
 **If you know Go:** chapter 03 shows Go inside shell text (declarations,
 funcs, imports) and a whole Go program through `--source=go` — which is where
 the Go-corpus numbers are measured — and how a file lowers back to ordinary Go.
+
+**If you want to rebuild bashy itself** from the binary you just installed
+(no other tools on Windows; the platform git and base tools on macOS/Linux):
+
+```sh
+bashy git clone https://github.com/qiangli/bashy
+cd bashy
+bashy scripts/bootstrap-siblings.sh
+bashy dag build          # -> bin/bashy (bin/bashy.exe on Windows); Go is provisioned by bashy
+```
 
 ## The six ideas
 

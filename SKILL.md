@@ -103,6 +103,16 @@ file is what `check.sh` reads.
 - With the dialect off (`--no-bashsharp`, `--posix`, the `bash` binary) none
   of this exists — that is the compatibility guarantee.
 
+## What is known-failing, and why you do not "fix" it
+
+On Windows the gate may print `XFAIL` for the Python, Rust, C and C++
+islands with a card id: the toolchain is present but bashy cannot drive it
+there yet (Store `python3` alias, `link` applet shadowing MSVC's linker,
+clang without SDK includes). Tell the person it is a known, tracked
+limitation of the release, not of their machine, and move on. Do not edit
+`cases.tsv` to make the count look better; an unexpected PASS there fails
+the gate on purpose so the marker is removed with the fix.
+
 ## Report
 
 When the person asks how it went, or the tour ends, give exactly:
