@@ -1,0 +1,10 @@
+# rc=0
+shout (script: read)
+shout is a bashy registered command (script)
+HELLO!
+hello   -> 0
+shout: precondition failed: test -n "$1"
+empty   -> 3
+shout  script  read     local  -            upper-case one word, loudly
+removed command shout
+removed -> 127

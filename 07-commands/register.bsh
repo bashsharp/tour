@@ -1,0 +1,28 @@
+#!/usr/bin/env -S bashy --bashsharp
+# Register your own command. `bashy commands add` puts a script (or a program,
+# or a pinned download) into your command ring, and from then on bashy treats
+# it like every shipped command: `type` knows it, `command -v` finds it, it
+# runs in every mode, and `bashy commands NAME` documents it. The body is a
+# Bash# script like any other, so it can carry a contract.
+#
+# The ring lives in $BASHY_COMMANDS_DIR (default ~/.config/bashy/commands).
+# This file uses a scratch ring so running it never touches yours.
+
+export BASHY_COMMANDS_DIR=$(mktemp -d)
+trap 'rm -rf "$BASHY_COMMANDS_DIR"' EXIT
+
+bashy commands add shout --set effects.0=read \
+    --set synopsis="upper-case one word, loudly" \
+    --set script='
+@require('"'"'test -n "$1"'"'"')
+function shout() { printf "%s!\n" "$1" | tr a-z A-Z; }
+shout "$@"'
+
+# The ring is read when a shell starts, so a command registered by this shell
+# is seen by the NEXT one — every new terminal, every `bashy -c`.
+bashy -c 'type shout'
+bashy -c 'shout hello';      echo "hello   -> $?"
+bashy -c 'shout ""';         echo "empty   -> $?"     # the contract refuses it before the body runs
+bashy commands list | tail -1
+bashy commands rm shout
+bashy -c 'shout hello' 2>/dev/null; echo "removed -> $?"

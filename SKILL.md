@@ -78,6 +78,7 @@ And the person sets the pace — you show, run, explain, and **wait**.
 | `06-sharp/02-kwargs-defaults.bsh` | `bashy --bashsharp …` | defaults, positional, keywords in any order |
 | `06-sharp/03-enums.bsh` | `bashy --bashsharp …` | every member covered; delete one to see `BASHPP-EENUM-NONEXHAUSTIVE` |
 | `06-sharp/04-readonly.bsh` | `bashy --bashsharp …` | reads through an alias; a write in a subshell refused; value unchanged |
+| `07-commands/register.bsh` | `bashy --bashsharp 07-commands/register.bsh` | `bashy commands add` registers a Bash# script as a command in a scratch ring; a fresh shell finds it by `type`; its `@require` refuses an empty argument (exit 3); `commands rm` removes it |
 | `06-sharp/05-null-safety.bsh` | `bashy check --bashsharp 06-sharp/05-null-safety.bsh; echo $?` | `BASHPP-ENULL-DEREF`, exit 2; it is a CHECK, not syntax |
 
 The mode, needs and expected status of every file are in `cases.tsv`; that

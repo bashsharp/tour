@@ -20,7 +20,7 @@ a pure-Go Bash 5.3 that runs on Linux, macOS and Windows.
 > one of them — [open an issue](https://github.com/qiangli/bashsharp-tour/issues)
 > with the output of `./check.sh`.
 
-This repo is a set of small, complete programs — one directory per idea —
+This repo is a set of small, complete programs — one directory per idea (seven, counting the bashy command ring) —
 each with a **pinned transcript** next to it, and one script, `./check.sh`,
 that runs them all against the `bashy` on your `PATH` and diffs. If you
 learn best by reading, start at [§ The six ideas](#the-six-ideas). If you
@@ -261,6 +261,23 @@ func two() {
 ```
 → [`06-sharp/`](06-sharp/)
 
+### 7 · Your own commands (a bashy feature the language leans on)
+`bashy commands add NAME --set script=…` (or `exec.0=PROGRAM`, or a pinned
+download with its sha256 in the record) registers **your** command in your
+ring, and bashy treats it like every shipped one — `type` knows it, it runs
+in every mode, `bashy commands NAME` documents it. The body is Bash#, so it
+can carry a contract:
+```bash
+bashy commands add shout --set effects.0=read --set script='
+@require('"'"'test -n "$1"'"'"')
+function shout() { printf "%s!\n" "$1" | tr a-z A-Z; }
+shout "$@"'
+bashy -c 'shout hello'     # HELLO!
+bashy -c 'shout ""'        # exit 3 — refused by the contract before the body runs
+```
+→ [`07-commands/`](07-commands/) (runs in a scratch ring; never touches yours)
+
+
 ## Learning with an AI agent
 
 The tour is written to be driven by a coding agent as well as read by you —
@@ -328,6 +345,7 @@ it needs input from you.
 | `04-islands/` | Polyglot | `python`, `typescript`, `rust`, `c`, `cpp`, `go/`, `bash`, `sh` |
 | `05-agentic/` | Agentic | `01-scope`, `02-forms`, `03-contracts`, `04-judge`, `05-yield` |
 | `06-sharp/` | Sharp | `01-decorators`, `02-kwargs-defaults`, `03-enums`, `04-readonly`, `05-null-safety` |
+| `07-commands/` | your own commands | `register.bsh` (a registered command with a contract, in a scratch ring) |
 | `check.sh` + `cases.tsv` | the gate | every file above, its mode, its needs, its exit status |
 | `SKILL.md` | the agent's tour | |
 

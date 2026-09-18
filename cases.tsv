@@ -32,3 +32,4 @@ sharp/kwargs-defaults	run	06-sharp/02-kwargs-defaults.bsh	-	0
 sharp/enums	run	06-sharp/03-enums.bsh	-	0
 sharp/readonly	run	06-sharp/04-readonly.bsh	-	0
 sharp/null-safety	check	06-sharp/05-null-safety.bsh	-	2
+commands/register	run	07-commands/register.bsh	-	0
