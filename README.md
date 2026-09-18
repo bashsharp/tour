@@ -79,7 +79,8 @@ a compiler. Every step is one command, and every command has a known answer.
 2. **Prove your install.** This runs all 27 programs and diffs each against
    its transcript:
    ```sh
-   ./check.sh
+   ./check.sh            # Linux, macOS
+   bashy ./check.sh      # Windows (there is no /bin/sh to honour the shebang; bashy is the shell)
    ```
    You want the last line to say `0 failed`. `SKIP` lines are fine — they
    name a tool you don't have (Rust, a C compiler, …) and the chapter it
@@ -163,7 +164,7 @@ func twice(n int) int { return n * 2 }
 printf '%d\n' twice(x)
 ```
 ```sh
-bashy --bashsharp --source=go 03-go/03-whole-program.go
+bashy --bashsharp --source=go 03-go/03-whole-program.go   # needs a Go SDK on PATH
 bashy transpile --bashsharp 03-go/04-transpile.bsh -o t.go
 ```
 → [`03-go/`](03-go/)

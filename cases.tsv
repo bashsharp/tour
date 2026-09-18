@@ -10,7 +10,7 @@ posix/script	posix	02-posix/posix-script.sh	-	0
 posix/dialect-is-inert	posix	02-posix/dialect-is-inert.bsh	-	0
 go/values	run	03-go/01-values.bsh	-	0
 go/funcs	run	03-go/02-funcs.bsh	-	0
-go/whole-program	gosrc	03-go/03-whole-program.go	-	0
+go/whole-program	gosrc	03-go/03-whole-program.go	go	0
 go/transpile-direct	run	03-go/04-transpile.bsh	-	0
 islands/python	run	04-islands/python.bsh	python3	0
 islands/typescript	run	04-islands/typescript.bsh	typescript	0

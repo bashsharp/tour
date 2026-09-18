@@ -35,7 +35,7 @@ And the person sets the pace — you show, run, explain, and **wait**.
 ## Working with the person
 
 - **Start by running the gate and reading its last line aloud**:
-  `./check.sh` → `tour: N passed, 0 failed, M skipped (…version…)`. Explain
+  `./check.sh` (on Windows: `bashy ./check.sh`) → `tour: N passed, 0 failed, M skipped (…version…)`. Explain
   each SKIP in one sentence (it names a tool that is not installed and the
   chapter it affects). If anything FAILs, stop here: show the diff, and
   offer to file it — do not continue the tour on a binary that disagrees

@@ -39,7 +39,7 @@ need_ok() { # prints the reason when the need is NOT met
     cargo) have cargo || echo "no cargo on PATH (install Rust)" ;;
     cc) have cc || echo "no C compiler (cc) on PATH" ;;
     c++) have c++ || echo "no C++ compiler (c++) on PATH" ;;
-    go) have go || echo "no go on PATH" ;;
+    go) have go || echo "no go on PATH (the Go island and --source=go need a Go SDK; bashy provisions one for builds, not yet for these)" ;;
     typescript)
         have node || { echo "no node on PATH"; return; }
         m=${BASHPP_TYPESCRIPT_MODULE:-}
