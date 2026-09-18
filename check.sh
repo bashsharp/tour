@@ -17,6 +17,9 @@ here=$(cd "$(dirname "$0")" && pwd)
 export BASHY_HINTS=off
 pin=0; bashy=bashy
 for a in "$@"; do case "$a" in --pin) pin=1 ;; *) bashy=$a ;; esac; done
+case "$bashy" in
+*/*) bashy=$(cd "$(dirname "$bashy")" && pwd)/$(basename "$bashy") ;;   # cases run from their own directory
+esac
 flag=${BASHSHARP_FLAG:-}
 if [ -z "$flag" ]; then
     # A binary from before the rename knows the old spelling only.
