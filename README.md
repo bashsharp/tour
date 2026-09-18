@@ -63,7 +63,9 @@ The full asset list (six platforms, checksums) is on the
 [Releases page](https://github.com/qiangli/bashy/releases/latest). Nothing
 else is required for the tour. Two optional chapters use tools you may
 already have: the language islands (Python, TypeScript, Rust, C/C++, Go) use
-*your* installed compilers, and the "back out as Go" step needs Go ≥ 1.27.
+*your* installed compilers — C and C++ specifically need **clang** (the
+island is analysed through Clang's AST; a GCC `cc` cannot serve it) — and the
+"back out as Go" step needs Go ≥ 1.27.
 `./check.sh` tells you exactly which it found.
 
 ## Step by step

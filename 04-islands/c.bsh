@@ -1,5 +1,6 @@
 #!/usr/bin/env -S bashy --bashsharp
-# A C island: plain C functions with C types; needs a C compiler on PATH.
+# A C island: plain C functions with C types; needs clang on PATH (the
+# island is analysed through Clang's AST — a GCC cc cannot serve it).
 
 ~~~c as c
 #include <string.h>

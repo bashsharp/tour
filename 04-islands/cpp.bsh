@@ -1,5 +1,5 @@
 #!/usr/bin/env -S bashy --bashsharp
-# A C++ island: std::string crosses the boundary; needs a C++ compiler.
+# A C++ island: std::string crosses the boundary; needs clang++ (Clang AST).
 
 ~~~cxx as cxx
 #include <string>

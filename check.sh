@@ -37,8 +37,10 @@ need_ok() { # prints the reason when the need is NOT met
     -) ;;
     python3) have python3 || echo "no python3 on PATH" ;;
     cargo) have cargo || echo "no cargo on PATH (install Rust)" ;;
-    cc) have cc || echo "no C compiler (cc) on PATH" ;;
-    c++) have c++ || echo "no C++ compiler (c++) on PATH" ;;
+    # The C/C++ islands are analysed through Clang's AST (-Xclang -ast-dump):
+    # a GCC `cc` cannot serve them, so the need is clang, not any cc.
+    cc) { have clang || { have cc && cc --version 2>/dev/null | grep -qi clang; }; } || echo "no clang on PATH (the C island uses Clang's AST; GCC cannot serve it)" ;;
+    c++) { have clang++ || { have c++ && c++ --version 2>/dev/null | grep -qi clang; }; } || echo "no clang++ on PATH (the C++ island uses Clang's AST; GCC cannot serve it)" ;;
     go) have go || echo "no go on PATH (the Go island and --source=go need a Go SDK; bashy provisions one for builds, not yet for these)" ;;
     typescript)
         have node || { echo "no node on PATH"; return; }
