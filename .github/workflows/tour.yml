@@ -10,11 +10,10 @@ name: tour
 # before it is promoted. The tour's minimum is the first --bashsharp release;
 # against anything older the gate is red by design, not broken.
 #
-# Windows runs the gate through bashy itself: a Windows user has no /bin/sh
-# for the shebang, and Git bash is not on their machine either. Git bash
-# would also hand bashy.exe a POSIX-spelled TMP, which broke `mktemp -d`
-# inside the judge (2026-09-18). The unix legs run it the way the README
-# says — `./check.sh`, the host's /bin/sh — so both spellings are covered.
+# Windows runs the gate through bashy itself, from pwsh: a Windows user has
+# no /bin/sh for the shebang and no Git bash either, and the release QA lane
+# drives it the same way. The unix legs run it the way the README says —
+# `./check.sh`, the host's /bin/sh — so both spellings are covered.
 on:
   push:
   pull_request:
