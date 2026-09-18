@@ -32,6 +32,15 @@ noflag=--no-${flag#--}
 pass=0; fail=0; skip=0; rc=0
 
 have() { command -v "$1" >/dev/null 2>&1; }
+# The TypeScript compiler module, if any: $BASHPP_TYPESCRIPT_MODULE or the global npm one.
+ts_module() {
+    m=${BASHPP_TYPESCRIPT_MODULE:-}
+    [ -n "$m" ] || { g=$(npm root -g 2>/dev/null); [ -n "$g" ] && [ -d "$g/typescript" ] && m=$g/typescript; }
+    [ -n "$m" ] && [ -f "$m/package.json" ] && [ -d "$m/lib" ] && printf '%s' "$m"
+}
+# Exported HERE, not inside need_ok: need_ok runs in a $(...) subshell and an
+# export there never reaches the runs.
+m=$(ts_module); [ -n "$m" ] && export BASHPP_TYPESCRIPT_MODULE="$m"
 need_ok() { # prints the reason when the need is NOT met
     case "$1" in
     -) ;;
@@ -41,13 +50,14 @@ need_ok() { # prints the reason when the need is NOT met
     # a GCC `cc` cannot serve them, so the need is clang, not any cc.
     cc) { have clang || { have cc && cc --version 2>/dev/null | grep -qi clang; }; } || echo "no clang on PATH (the C island uses Clang's AST; GCC cannot serve it)" ;;
     c++) { have clang++ || { have c++ && c++ --version 2>/dev/null | grep -qi clang; }; } || echo "no clang++ on PATH (the C++ island uses Clang's AST; GCC cannot serve it)" ;;
-    go) have go || echo "no go on PATH (the Go island and --source=go need a Go SDK; bashy provisions one for builds, not yet for these)" ;;
+    go)
+        gv=$(GOTOOLCHAIN=local go version 2>/dev/null | sed -n 's/^go version go\([0-9]*\.[0-9]*\).*/\1/p')
+        if [ -z "$gv" ]; then echo "no go on PATH (the Go island and --source=go need a Go SDK >= 1.27; bashy provisions one for builds, not yet for these)"
+        elif [ "$(printf '%s\n1.27\n' "$gv" | sort -V | head -1)" != 1.27 ]; then echo "go $gv on PATH is older than 1.27 (the Go island and --source=go need >= 1.27)"; fi ;;
     typescript)
         have node || { echo "no node on PATH"; return; }
-        m=${BASHPP_TYPESCRIPT_MODULE:-}
-        [ -n "$m" ] || { g=$(npm root -g 2>/dev/null); [ -n "$g" ] && [ -d "$g/typescript" ] && m=$g/typescript; }
-        [ -n "$m" ] && [ -f "$m/package.json" ] && [ -d "$m/lib" ] || echo "no typescript package (npm install -g typescript, or set BASHPP_TYPESCRIPT_MODULE)"
-        [ -n "$m" ] && export BASHPP_TYPESCRIPT_MODULE="$m" ;;
+        m=$(ts_module)
+        [ -n "$m" ] || echo "no typescript package (npm install -g typescript, or set BASHPP_TYPESCRIPT_MODULE)" ;;
     esac
 }
 invoke() { # mode file -> runs in the file's directory, prints stdout+stderr, returns status
