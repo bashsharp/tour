@@ -18,8 +18,10 @@ bashy commands add shout --set effects.0=read \
 function shout() { printf "%s!\n" "$1" | tr a-z A-Z; }
 shout "$@"'
 
-# The ring is read when a shell starts, so a command registered by this shell
-# is seen by the NEXT one — every new terminal, every `bashy -c`.
+# Fresh shells (`bashy -c`) are used below so this file runs the same on
+# v0.23.0, where a registration is seen by the next shell, and on later
+# releases, where the registering shell sees it too (every lookup re-checks
+# the ring's directory; `commands rm` takes effect the same way).
 bashy -c 'type shout'
 bashy -c 'shout hello';      echo "hello   -> $?"
 bashy -c 'shout ""';         echo "empty   -> $?"     # the contract refuses it before the body runs
