@@ -28,6 +28,8 @@ learn best by doing, start at [§ Step by step](#step-by-step). If you would
 rather have an AI agent walk you through, start at [§ Learning with an AI
 agent](#learning-with-an-ai-agent).
 
+![the quickstart: one agentic function under three contracts — six calls, six exit codes, no model called](casts/judge.gif)
+
 ## Install bashy (two minutes)
 
 One static binary, no dependencies. Pick your platform:
@@ -166,6 +168,12 @@ cd bashy
 bashy scripts/bootstrap-siblings.sh
 bashy dag build          # -> bin/bashy (bin/bashy.exe on Windows); Go is provisioned by bashy
 ```
+
+That is the whole procedure on a Windows machine with none of git, Go or a C
+compiler installed — recorded, not described
+([`casts/`](casts/) has the `.cast` files and how they were made):
+
+![bashy rebuilding itself on a stock Windows box: download the zip, bashy git clone, bootstrap-siblings, bashy dag build, run the result](casts/windows-rebuild.gif)
 
 ## The six ideas
 

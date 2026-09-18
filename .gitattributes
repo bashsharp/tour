@@ -1,3 +1,5 @@
 # Transcripts and programs are compared byte for byte on every OS: never convert line endings.
 * text eol=lf
 *.expected -text
+*.gif binary
+*.cast -text
