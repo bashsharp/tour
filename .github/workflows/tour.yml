@@ -9,6 +9,11 @@ on:
   schedule:
     - cron: '17 6 * * *'
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'bashy release tag to test (default: the latest release); a -dev prerelease is how release QA runs this gate before promotion'
+        required: false
+        default: ''
 jobs:
   tour:
     strategy:
@@ -27,9 +32,13 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@v4
-      - name: Download the latest bashy release asset
+      - name: Download the bashy release asset
         run: |
-          curl -fsSLO "https://github.com/qiangli/bashy/releases/latest/download/${{ matrix.asset }}"
+          tag='${{ github.event.inputs.tag }}'
+          if [ -n "$tag" ]; then url="https://github.com/qiangli/bashy/releases/download/$tag/${{ matrix.asset }}"
+          else url="https://github.com/qiangli/bashy/releases/latest/download/${{ matrix.asset }}"; fi
+          echo "asset: $url"
+          curl -fsSLO "$url"
           case "${{ matrix.asset }}" in
             *.zip) unzip -o "${{ matrix.asset }}" ;;
             *) tar -xzf "${{ matrix.asset }}" ;;
