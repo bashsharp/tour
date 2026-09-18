@@ -1,13 +1,19 @@
 # Bash# tour — getting started
 
+[![tour](https://github.com/qiangli/bashsharp-tour/actions/workflows/tour.yml/badge.svg)](https://github.com/qiangli/bashsharp-tour/actions/workflows/tour.yml)
+
 **Bash#** ("bash sharp") is a programming language for agents: *the bash you
 already know, Go where you need types, any fenced language where you need a
 library, and `agentic` where you need a model — with contracts so a model's
 output is judged, never trusted.* It runs inside [`bashy`](https://github.com/qiangli/bashy),
 a pure-Go Bash 5.3 that runs on Linux, macOS and Windows.
 
-> **Alpha.** Everything in this repo runs today on a released `bashy`. Syntax
-> may still change before 1.0, and the way to change it is an RFC in the
+> **Alpha.** Everything in this repo runs on the bashy release that carries
+> the Bash# rename (the first `--bashsharp` release) and later; on v0.22.0
+> and earlier, chapters that use contracts, decorators, `--source=go` or the
+> bash/sh islands fail, and the [CI badge](https://github.com/qiangli/bashsharp-tour/actions)
+> shows exactly which against the latest release on Linux, macOS and
+> Windows. Syntax may still change before 1.0, and the way to change it is an RFC in the
 > language repo, [`qiangli/bashsharp`](https://github.com/qiangli/bashsharp).
 > If something here does not match what your binary does, that is a bug in
 > one of them — [open an issue](https://github.com/qiangli/bashsharp-tour/issues)
