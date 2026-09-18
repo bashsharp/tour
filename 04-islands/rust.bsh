@@ -1,0 +1,12 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A Rust island: `pub fn`s become callables; needs cargo/rustc on PATH.
+
+~~~rs as rs
+pub fn add(a: i64, b: i64) -> i64 { a + b }
+pub fn greet(name: &str) -> String { format!("hello {name}") }
+~~~
+
+x := rs.add(20, 22)
+echo "x=$x"
+g := rs.greet("rust")
+echo "$g"

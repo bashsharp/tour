@@ -1,0 +1,12 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A bash island: an isolated bash dialect scope on the embedded interpreter —
+# no process, its own variables. `counter` inside never touches the outer one.
+
+~~~bash as island
+Show() { counter=$(( ${counter:-0} + 1 )); printf '%s=%s' "$1" "$counter"; }
+~~~
+
+counter=99
+first := island.Show(alpha)
+second := island.Show(alpha)
+printf '%s|%s|%s\n' "$first" "$second" "$counter"

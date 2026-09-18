@@ -1,0 +1,32 @@
+#!/usr/bin/env -S bashy --bashsharp
+# Typed functions with Go control flow in their bodies: `if`, `switch`,
+# `for`, `return`. (Go control flow at the TOP LEVEL of shell text — an
+# `if x != 0 { … }` block between shell commands — is planned, not shipped;
+# put it in a func.)
+
+func classify(n int) string {
+    if n < 0 {
+        return "negative"
+    }
+    switch n {
+    case 0:
+        return "zero"
+    }
+    return "positive"
+}
+
+func sum(limit int) int {
+    total := 0
+    for i := 1; i <= limit; i++ {
+        total += i
+    }
+    return total
+}
+
+n := -3
+a := classify(n)
+b := classify(0)
+c := classify(9)
+echo "$a $b $c"
+s := sum(10)
+echo "sum(10)=$s"

@@ -1,0 +1,32 @@
+# id	mode	file	needs	rc
+# mode: run = bashy --bashsharp FILE · off = bashy --no-bashsharp FILE · posix = bashy --posix FILE
+#       gosrc = bashy --bashsharp --source=go FILE · check = bashy check --bashsharp FILE
+# needs: - | python3 | typescript | cargo | cc | c++ | go
+# rc: the exit status the transcript is pinned with
+quickstart/judge	run	00-quickstart/judge.bsh	-	0
+bash/on	run	01-bash/bash-is-bash.bsh	-	0
+bash/off	off	01-bash/bash-is-bash.bsh	-	0
+posix/script	posix	02-posix/posix-script.sh	-	0
+posix/dialect-is-inert	posix	02-posix/dialect-is-inert.bsh	-	0
+go/values	run	03-go/01-values.bsh	-	0
+go/funcs	run	03-go/02-funcs.bsh	-	0
+go/whole-program	gosrc	03-go/03-whole-program.go	-	0
+go/transpile-direct	run	03-go/04-transpile.bsh	-	0
+islands/python	run	04-islands/python.bsh	python3	0
+islands/typescript	run	04-islands/typescript.bsh	typescript	0
+islands/rust	run	04-islands/rust.bsh	cargo	0
+islands/c	run	04-islands/c.bsh	cc	0
+islands/cpp	run	04-islands/cpp.bsh	c++	0
+islands/go	run	04-islands/go/go.bsh	go	0
+islands/bash	run	04-islands/bash.bsh	-	0
+islands/sh	run	04-islands/sh.bsh	-	0
+agentic/scope	run	05-agentic/01-scope.bsh	-	0
+agentic/forms	run	05-agentic/02-forms.bsh	-	0
+agentic/contracts	run	05-agentic/03-contracts.bsh	-	0
+agentic/judge	run	05-agentic/04-judge.bsh	-	0
+agentic/yield	run	05-agentic/05-yield.bsh	-	6
+sharp/decorators	run	06-sharp/01-decorators.bsh	-	0
+sharp/kwargs-defaults	run	06-sharp/02-kwargs-defaults.bsh	-	0
+sharp/enums	run	06-sharp/03-enums.bsh	-	0
+sharp/readonly	run	06-sharp/04-readonly.bsh	-	0
+sharp/null-safety	check	06-sharp/05-null-safety.bsh	-	2

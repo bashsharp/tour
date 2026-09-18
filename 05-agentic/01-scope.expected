@@ -1,0 +1,5 @@
+# rc=0
+01-scope.bsh: line 8: helper: agentic action requires an explicit agentic { ...; } scope
+outside -> 1
+helped
+inside  -> 0

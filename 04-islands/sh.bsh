@@ -1,0 +1,9 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A POSIX sh island: same idea, POSIX dialect. Arguments pass as words.
+
+~~~sh as posix
+Join() { printf '%s/%s/%s' "$#" "$1" "$2"; }
+~~~
+
+value := posix.Join("a b", c)
+echo "$value"

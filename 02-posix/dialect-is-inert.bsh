@@ -1,0 +1,5 @@
+# Under --posix (and with --no-bashsharp, and in the `bash` binary) the Bash#
+# dialect does not exist: the line below is an ordinary command named `x`,
+# and the shell reports it as one. That is the compatibility guarantee.
+x := 1
+echo "$x"

@@ -1,0 +1,14 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A Go island. A Go fence is compiled with the NEAREST go.mod's toolchain —
+# the project's own — so this file lives next to a go.mod. Needs go on PATH.
+
+~~~go as g
+import "strings"
+func Greet(name string) string { return "hello " + name }
+func Shout(s string) string { return strings.ToUpper(s) }
+~~~
+
+g := g.Greet("go")
+echo "$g"
+s := g.Shout("island")
+echo "$s"

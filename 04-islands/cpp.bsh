@@ -1,0 +1,13 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A C++ island: std::string crosses the boundary; needs a C++ compiler.
+
+~~~cxx as cxx
+#include <string>
+std::string greet(const std::string& name) { return "hello " + name; }
+int add(int a, int b) { return a + b; }
+~~~
+
+g := cxx.greet("c++")
+echo "$g"
+x := cxx.add(20, 22)
+echo "x=$x"

@@ -1,0 +1,2 @@
+# rc=2
+BASHPP-ENULL-DEREF: p may be nil when dereferenced

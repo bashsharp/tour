@@ -1,0 +1,13 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A C island: plain C functions with C types; needs a C compiler on PATH.
+
+~~~c as c
+#include <string.h>
+int add(int a, int b) { return a + b; }
+size_t length(const char *s) { return strlen(s); }
+~~~
+
+x := c.add(20, 22)
+echo "x=$x"
+n := c.length("island")
+echo "n=$n"

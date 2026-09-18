@@ -1,0 +1,14 @@
+#!/usr/bin/env -S bashy --bashsharp
+# `agentic` is the language's `unsafe`. An agentic action can only be CALLED
+# from inside an explicit `agentic { … }` scope — calling it from ordinary
+# code is refused, so a reader always sees where a model may be involved.
+
+agentic function helper() { echo helped; }
+
+helper                          # refused: requires an explicit agentic scope
+echo "outside -> $?"
+
+agentic {
+    helper                      # allowed
+    echo "inside  -> $?"
+}

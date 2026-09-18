@@ -1,0 +1,306 @@
+# Bash# tour — getting started
+
+**Bash#** ("bash sharp") is a programming language for agents: *the bash you
+already know, Go where you need types, any fenced language where you need a
+library, and `agentic` where you need a model — with contracts so a model's
+output is judged, never trusted.* It runs inside [`bashy`](https://github.com/qiangli/bashy),
+a pure-Go Bash 5.3 that runs on Linux, macOS and Windows.
+
+> **Alpha.** Everything in this repo runs today on a released `bashy`. Syntax
+> may still change before 1.0, and the way to change it is an RFC in the
+> language repo, [`qiangli/bashsharp`](https://github.com/qiangli/bashsharp).
+> If something here does not match what your binary does, that is a bug in
+> one of them — [open an issue](https://github.com/qiangli/bashsharp-tour/issues)
+> with the output of `./check.sh`.
+
+This repo is a set of small, complete programs — one directory per idea —
+each with a **pinned transcript** next to it, and one script, `./check.sh`,
+that runs them all against the `bashy` on your `PATH` and diffs. If you
+learn best by reading, start at [§ The six ideas](#the-six-ideas). If you
+learn best by doing, start at [§ Step by step](#step-by-step). If you would
+rather have an AI agent walk you through, start at [§ Learning with an AI
+agent](#learning-with-an-ai-agent).
+
+## Install bashy (two minutes)
+
+One static binary, no dependencies. Pick your platform:
+
+**macOS (Apple Silicon)**
+```sh
+curl -fsSLO https://github.com/qiangli/bashy/releases/latest/download/bashy-darwin-arm64.tar.gz
+tar -xzf bashy-darwin-arm64.tar.gz
+sudo install bashy /usr/local/bin/bashy
+```
+(Intel Mac: replace `arm64` with `amd64`.)
+
+**Linux (x86-64)**
+```sh
+curl -fsSLO https://github.com/qiangli/bashy/releases/latest/download/bashy-linux-amd64.tar.gz
+tar -xzf bashy-linux-amd64.tar.gz
+sudo install bashy /usr/local/bin/bashy
+```
+(ARM64: replace `amd64` with `arm64`.)
+
+**Windows (PowerShell)**
+```powershell
+Invoke-WebRequest https://github.com/qiangli/bashy/releases/latest/download/bashy-windows-amd64.zip -OutFile bashy.zip
+Expand-Archive bashy.zip -DestinationPath "$env:LOCALAPPDATA\bashy"
+$env:Path += ";$env:LOCALAPPDATA\bashy"      # add it permanently via System Settings → Environment Variables
+```
+
+Then:
+```sh
+bashy --version        # bashy, GNU Bash 5.3 compatible, version 5.3.0(1)-bashy-...
+```
+
+The full asset list (six platforms, checksums) is on the
+[Releases page](https://github.com/qiangli/bashy/releases/latest). Nothing
+else is required for the tour. Two optional chapters use tools you may
+already have: the language islands (Python, TypeScript, Rust, C/C++, Go) use
+*your* installed compilers, and the "back out as Go" step needs Go ≥ 1.27.
+`./check.sh` tells you exactly which it found.
+
+## Step by step
+
+Works the same whether you have never written a shell script or you maintain
+a compiler. Every step is one command, and every command has a known answer.
+
+1. **Get the tour.**
+   ```sh
+   git clone https://github.com/qiangli/bashsharp-tour
+   cd bashsharp-tour
+   ```
+2. **Prove your install.** This runs all 27 programs and diffs each against
+   its transcript:
+   ```sh
+   ./check.sh
+   ```
+   You want the last line to say `0 failed`. `SKIP` lines are fine — they
+   name a tool you don't have (Rust, a C compiler, …) and the chapter it
+   affects. A `FAIL` prints a diff; please paste it into an issue.
+3. **Run the ten-minute demo** and read the table that explains it:
+   ```sh
+   bashy --bashsharp 00-quickstart/judge.bsh
+   ```
+   → [`00-quickstart/`](00-quickstart/) — six calls to one function, six exit
+   codes, and the one that matters: **6**, a *yield*.
+4. **Walk the chapters in order.** Each file is short; open it, read the
+   comment at the top (it says what to notice), run it, compare with the
+   `.expected` next to it:
+   ```sh
+   cat 01-bash/bash-is-bash.bsh
+   bashy --bashsharp 01-bash/bash-is-bash.bsh
+   cat 01-bash/bash-is-bash.expected
+   ```
+   Do this for `01-bash` → `02-posix` → `03-go` → `04-islands` →
+   `05-agentic` → `06-sharp`. About an hour, all told.
+5. **Change something and see what breaks.** Delete a `case` from
+   `06-sharp/03-enums.bsh` and run it; make `05-agentic/04-judge.bsh`'s
+   `lie` tell the truth; call `helper` outside the scope in
+   `05-agentic/01-scope.bsh`. The diagnostics are the language explaining
+   itself.
+6. **Write your first Bash# file.** Copy a shape from a chapter — that is the
+   rule for now (see [§ Rules of the road](#rules-of-the-road)) — put it in a
+   file ending in `.bsh` with `#!/usr/bin/env -S bashy --bashsharp` on line
+   one, and run it.
+7. **Tell us what confused you.** During the alpha that is the most useful
+   contribution there is: [issues](https://github.com/qiangli/bashsharp-tour/issues)
+   here for the tour, the language repo's `rfcs/` for the syntax you wish you had.
+
+**If you are new to programming:** you only need chapters 00, 01, 02 and 05
+to understand what Bash# is *for*. A "contract" is a check that runs before
+or after a piece of code; a "yield" is the code saying "I need something I
+don't have"; and `agentic` is the word that marks the one place a program is
+allowed to hand work to an AI. Everything else is detail.
+
+**If you know bash:** chapters 01, 02 and 06 are the ones you will argue
+with. Run `01-bash` twice as `check.sh` does — with the dialect on and off —
+and then read the [collision map](https://github.com/qiangli/bashsharp/blob/main/docs/bashpp-posix-superset-syntax.md)
+for *why* each new shape is safe.
+
+**If you know Go:** chapter 03 shows Go inside shell text (declarations,
+funcs, imports) and a whole Go program through `--source=go` — which is where
+the Go-corpus numbers are measured — and how a file lowers back to ordinary Go.
+
+## The six ideas
+
+Each is one sentence, one runnable snippet, and a link. The gate-bearing
+definition of each — the exact suites and numbers — lives in the language
+README and [`docs/claims.md`](https://github.com/qiangli/bashsharp/blob/main/docs/claims.md);
+this page does not repeat them.
+
+### 1 · Base — GNU Bash 5.3, a strict superset
+Every Bash 5.3 program is a Bash# program with the same meaning; with the
+flag off the dialect does not exist.
+```sh
+bashy --bashsharp    01-bash/bash-is-bash.bsh
+bashy --no-bashsharp 01-bash/bash-is-bash.bsh     # identical output
+```
+→ [`01-bash/`](01-bash/)
+
+### 2 · Standard — POSIX.1-2016
+Under `--posix` the same engine is a POSIX shell over the pure-Go coreutils —
+one identical toolset on Linux, macOS and Windows — and the dialect is inert.
+```sh
+bashy --posix 02-posix/posix-script.sh
+bashy --posix 02-posix/dialect-is-inert.bsh       # "x: command not found" — inert, as promised
+```
+→ [`02-posix/`](02-posix/)
+
+### 3 · Typed core — Go 1.27, mixed
+Go declarations, typed functions, calls written as words, control flow inside
+bodies; whole Go programs (generics and all) through `--source=go`; and every
+construct lowers back to ordinary Go.
+```bash
+x := 42
+func twice(n int) int { return n * 2 }
+printf '%d\n' twice(x)
+```
+```sh
+bashy --bashsharp --source=go 03-go/03-whole-program.go
+bashy transpile --bashsharp 03-go/04-transpile.bsh -o t.go
+```
+→ [`03-go/`](03-go/)
+
+### 4 · Polyglot — fenced islands
+A tilde-fenced block in Python, TypeScript, Rust, C, C++, Go, bash or sh is an
+*island*: its functions are ordinary callables from shell text, typed values
+cross the boundary, and it runs on the compiler you already have.
+```
+~~~py as py
+def shout(s: str) -> str:
+    return s.upper() + "!"
+~~~
+s := py.shout("islands")
+echo "$s"
+```
+→ [`04-islands/`](04-islands/) — one file per language.
+
+### 5 · Agentic — the reserved word
+`agentic` is the language's `unsafe`: an `agentic` body is the one place a
+program may hand work to a model, it can only be called from inside an
+explicit `agentic { … }` scope, and `@require` / `@ensure` / `@guard`
+contracts judge what comes back. Status **6** is a *yield* — "input
+required" — and no `@ensure` runs on it.
+```bash
+@guard(effects: "read")
+@require('test -n "$1"')
+@ensure('test "$1" != lie')
+agentic function summarize() { ... }
+
+agentic {
+    summarize ok           # 0
+    summarize lie          # 3 — the postcondition disagrees
+    summarize yield        # 6 — the body needs input
+}
+```
+The interpreter never calls a model. → [`05-agentic/`](05-agentic/): the
+scope rule, every spelling of the keyword, contracts, the judge demo, yield.
+
+### 6 · Sharp — the ergonomics tier
+The things a shell audience reaches for that Go leaves out, admitted only when
+they lower to plain Go and collide with nothing bash already accepts:
+decorators, keyword and default arguments, exhaustive enums, deep `readonly`,
+and a null-safety **check**.
+```bash
+func tag(c *Call, label string, level string = "info") {
+    name := c.Name
+    echo "[$level] $label -> $name"
+    c.Next()
+}
+
+@tag(label: "keyword", level: "debug")
+func two() {
+    echo "two:body"
+}
+```
+→ [`06-sharp/`](06-sharp/)
+
+## Learning with an AI agent
+
+The tour is written to be driven by a coding agent as well as read by you —
+that is what Bash# is for. [`SKILL.md`](SKILL.md) is the agent's version: a
+procedure it can follow without judgement calls, plus the rules it must keep
+when it writes Bash# for you afterwards.
+
+**How to use it**
+
+1. Install `bashy` (above) and clone this repo.
+2. Open your coding agent in the repo — Claude Code, Codex, OpenCode, or any
+   tool that can run shell commands — and say:
+
+   > Read SKILL.md in this directory and walk me through the Bash# tour.
+   > Run the gate first, then take one chapter at a time: show me the file,
+   > run it, explain the transcript, and wait for me before moving on.
+
+3. Ask it things as you go. Good questions, because the answer is in the
+   transcripts and not in the agent's memory: *"why does `summarize ""` exit
+   3 and `summarize fail` exit 1?"* · *"run 01-bash with the dialect off —
+   what changed?"* · *"delete the `Green` case in 03-enums and show me the
+   error"* · *"write me a decorator that times a call"* (watch it copy the
+   `c *Call` shape from `06-sharp/01-decorators.bsh`).
+4. When you are done, ask for the report the skill defines: the gate's
+   summary line, every SKIP with its reason, any FAIL with its diff, and the
+   `bashy --version` it ran. That is exactly what an issue needs.
+
+**What the agent is told not to do** (so you can trust the session): never
+edit an `.expected` file to make a check pass; never invent a syntax shape
+that is not in a chapter; never quote a conformance number that is not in
+`docs/claims.md`; stop and report on the first FAIL. An agent that "fixed"
+the tour by changing a transcript has broken it — the transcripts are the
+contract.
+
+**Working with the agent on your own Bash#.** After the tour, keep the
+skill loaded: it makes the agent copy shapes from the chapters, bind a call
+to a name before using it in keyword-argument position, put Go control flow
+inside a `func`, and treat `agentic` as a boundary rather than a feature.
+When the agent yields (a script exits 6), that is the language working:
+it needs input from you.
+
+## Rules of the road (alpha)
+
+- **Copy shapes from the chapters.** Bash# admits a construct only at a
+  measured *start site*; a shape not shown here may parse as plain bash and
+  silently do something else. Known gaps you will hit: a top-level Go
+  `if x != 0 { … }` block in shell text (planned — put it in a `func`), a
+  call in keyword-argument position (`greet(retries: twice(2))` — bind it
+  first), a negative literal as a call argument (`f(-3)` — bind it first).
+- **Never write a tilde fence inside a comment**; the island scanner takes
+  it for a real one.
+- **Every number about Bash# names its corpus** — `docs/claims.md` in the
+  language repo. Please don't quote others.
+- **With the dialect off, none of this exists.** That is the compatibility
+  promise, and `01-bash` run both ways is its proof.
+
+## What is here
+
+| dir | idea | files |
+|---|---|---|
+| `00-quickstart/` | the ten-minute demo | `judge.bsh` |
+| `01-bash/` | Base | `bash-is-bash.bsh` (run on and off) |
+| `02-posix/` | Standard | `posix-script.sh`, `dialect-is-inert.bsh` |
+| `03-go/` | Typed core | `01-values`, `02-funcs`, `03-whole-program.go`, `04-transpile` |
+| `04-islands/` | Polyglot | `python`, `typescript`, `rust`, `c`, `cpp`, `go/`, `bash`, `sh` |
+| `05-agentic/` | Agentic | `01-scope`, `02-forms`, `03-contracts`, `04-judge`, `05-yield` |
+| `06-sharp/` | Sharp | `01-decorators`, `02-kwargs-defaults`, `03-enums`, `04-readonly`, `05-null-safety` |
+| `check.sh` + `cases.tsv` | the gate | every file above, its mode, its needs, its exit status |
+| `SKILL.md` | the agent's tour | |
+
+`check.sh --pin` re-pins every transcript from the binary on `PATH` — for
+maintainers, after a deliberate change, never to make a red check green.
+
+## Relationship to the other repos
+
+- [`qiangli/bashy`](https://github.com/qiangli/bashy) — the product you
+  install; Bash# is what `bashy --bashsharp` speaks.
+- [`qiangli/bashsharp`](https://github.com/qiangli/bashsharp) — the
+  language: the five clauses with their gates, design decisions, `ROADMAP.md`,
+  `rfcs/`, `docs/claims.md`.
+- [`qiangli/bashsharp-tests`](https://github.com/qiangli/bashsharp-tests) —
+  the conformance suite every snippet here was copied from.
+- [`qiangli/sh`](https://github.com/qiangli/sh) — the engine, a fork of
+  [`mvdan/sh`](https://github.com/mvdan/sh).
+
+## License
+
+BSD-3-Clause.

@@ -1,0 +1,21 @@
+#!/usr/bin/env -S bashy --bashsharp
+# Yield. Status 6 from an agentic action means INPUT REQUIRED: the body needs
+# something it does not have. No @ensure runs on a yield (there is no result
+# to judge). The caller decides what to do; `|| exit $?` hands the 6 to
+# whoever ran the script — a human, or the coding agent that ran `bashy -c` —
+# so it can ask, and retry.
+
+@ensure('echo "ensure ran for $1" >&2; true')
+agentic function step() {
+    case "$1" in
+    ask) return 6 ;;
+    esac
+    echo "did $1"
+}
+
+agentic {
+    step build; echo "build -> $?"
+    step ask || exit $?
+    echo "not reached"
+}
+echo "not reached either"

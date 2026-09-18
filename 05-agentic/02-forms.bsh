@@ -1,0 +1,26 @@
+#!/usr/bin/env -S bashy --bashsharp
+# Every spelling of the keyword. Nothing here calls a model: an `agentic`
+# body is ordinary code that is ALLOWED to be delegated — the word marks the
+# boundary, the contracts (next file) judge what comes back.
+
+agentic function summarize_shell() {           # a shell function
+    echo "summary of $1"
+}
+
+agentic func summarize(text string) string {   # a typed function
+    return "summary of " + text
+}
+
+type Report string
+agentic func (r Report) Summarize() string {   # a typed method
+    return "summary of " + string(r)
+}
+
+agentic {                                      # the scope
+    summarize_shell "the memo"
+    s := summarize("the report")
+    echo "$s"
+    var report Report = "q3"
+    t := report.Summarize()
+    echo "$t"
+}

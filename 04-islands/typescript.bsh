@@ -1,0 +1,14 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A TypeScript island. Bash# runs the official TypeScript compiler: needs a
+# node on PATH and the `typescript` npm package (npm install -g typescript,
+# or point BASHPP_TYPESCRIPT_MODULE at one). check.sh SKIPs without it.
+
+~~~ts as ts
+export function add(a: number, b: number): number { return a + b }
+export function tag(s: string): string { return `<${s}>` }
+~~~
+
+x := ts.add(20, 22)
+echo "x=$x"
+t := ts.tag("island")
+echo "$t"

@@ -1,0 +1,45 @@
+name: tour
+# The Bash# tour gate against the LATEST bashy release, on all three OSes.
+# This is the install-matrix: a stranger's machine, the published binary,
+# every chapter diffed against its pinned transcript. Optional chapters
+# SKIP by name when a runner lacks the tool; the job still requires 0 failed.
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+jobs:
+  tour:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            asset: bashy-linux-amd64.tar.gz
+          - os: macos-latest
+            asset: bashy-darwin-arm64.tar.gz
+          - os: windows-latest
+            asset: bashy-windows-amd64.zip
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download the latest bashy release asset
+        run: |
+          curl -fsSLO "https://github.com/qiangli/bashy/releases/latest/download/${{ matrix.asset }}"
+          case "${{ matrix.asset }}" in
+            *.zip) unzip -o "${{ matrix.asset }}" ;;
+            *) tar -xzf "${{ matrix.asset }}" ;;
+          esac
+          ls -l bashy* 
+      - name: Version
+        run: |
+          bin=./bashy; [ -f ./bashy.exe ] && bin=./bashy.exe
+          "$bin" --version
+      - name: Tour gate
+        run: |
+          bin=./bashy; [ -f ./bashy.exe ] && bin=./bashy.exe
+          ./check.sh "$bin"
