@@ -104,8 +104,11 @@ If your shell refuses a command with an "unsupported locale" message, set
 Nothing is skipped for a missing tool — bashy provisions it — so on a
 machine that has never run an island the first gate is slower (the
 downloads) and every later one is not. `known-failing` is reserved for a
-case pinned to a card in `cases.tsv`; there are none today, and an
-unexpected pass there fails the gate on purpose so a marker cannot rot.
+case pinned to a card in `cases.tsv` — today one, on Windows only:
+`commands/register` (a PATH entry under the profile directory is rewritten
+to a literal `$HOME`, so `bashy` is not found from inside the script;
+pre-existing, not an island) — and an unexpected pass there fails the gate
+on purpose so a marker cannot rot.
 
 ## Step by step
 

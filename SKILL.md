@@ -108,8 +108,9 @@ file is what `check.sh` reads.
 
 A case may carry an `xfail` marker in `cases.tsv` naming an OS and a card:
 the gate prints `XFAIL` for it there. Tell the person it is a known, tracked
-limitation of the release, not of their machine, and move on. There are no
-markers today. Do not edit `cases.tsv` to make the count look better; an
+limitation of the release, not of their machine, and move on. One marker
+today: `commands/register` on Windows (bashy is not found on a PATH entry
+under the profile directory; not an island). Do not edit `cases.tsv` to make the count look better; an
 unexpected PASS there fails the gate on purpose so the marker is removed
 with the fix. A fenced island that fails for a missing tool is a real
 failure now (bashy provisions the toolchains itself) — report it.
