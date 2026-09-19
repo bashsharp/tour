@@ -1,6 +1,6 @@
 # Bash# tour — getting started
 
-[![tour](https://github.com/qiangli/bashsharp-tour/actions/workflows/tour.yml/badge.svg)](https://github.com/qiangli/bashsharp-tour/actions/workflows/tour.yml)
+[![tour](https://github.com/bashsharp/bashsharp-tour/actions/workflows/tour.yml/badge.svg)](https://github.com/bashsharp/bashsharp-tour/actions/workflows/tour.yml)
 
 **Bash#** ("bash sharp") is a programming language for agents: *the bash you
 already know, Go where you need types, any fenced language where you need a
@@ -11,14 +11,14 @@ a pure-Go Bash 5.3 that runs on Linux, macOS and Windows.
 > **Alpha.** Everything in this repo runs on **bashy v0.24.0** and later
 > (the fenced islands need no toolchain on your machine from v0.24.0; the
 > first Bash# release was v0.23.0) — the
-> [CI badge](https://github.com/qiangli/bashsharp-tour/actions) is this gate
+> [CI badge](https://github.com/bashsharp/bashsharp-tour/actions) is this gate
 > against the latest release on Linux, macOS and Windows, run twice per OS:
 > with the runner's toolchains on `PATH` and with every one of them stripped
 > off it, and the two must agree.
 > Syntax may still change before 1.0, and the way to change it is an RFC in the
-> language repo, [`qiangli/bashsharp`](https://github.com/qiangli/bashsharp).
+> language repo, [`bashsharp/bashsharp`](https://github.com/bashsharp/bashsharp).
 > If something here does not match what your binary does, that is a bug in
-> one of them — [open an issue](https://github.com/qiangli/bashsharp-tour/issues)
+> one of them — [open an issue](https://github.com/bashsharp/bashsharp-tour/issues)
 > with the output of `./check.sh`.
 
 This repo is a set of small, complete programs — one directory per idea (seven, counting the bashy command ring) —
@@ -117,7 +117,7 @@ a compiler. Every step is one command, and every command has a known answer.
 
 1. **Get the tour.**
    ```sh
-   git clone https://github.com/qiangli/bashsharp-tour
+   git clone https://github.com/bashsharp/bashsharp-tour
    cd bashsharp-tour
    ```
 2. **Prove your install.** This runs all 27 programs and diffs each against
@@ -155,7 +155,7 @@ a compiler. Every step is one command, and every command has a known answer.
    file ending in `.bsh` with `#!/usr/bin/env -S bashy --bashsharp` on line
    one, and run it.
 7. **Tell us what confused you.** During the alpha that is the most useful
-   contribution there is: [issues](https://github.com/qiangli/bashsharp-tour/issues)
+   contribution there is: [issues](https://github.com/bashsharp/bashsharp-tour/issues)
    here for the tour, the language repo's `rfcs/` for the syntax you wish you had.
 
 **If you are new to programming:** you only need chapters 00, 01, 02 and 05
@@ -166,7 +166,7 @@ allowed to hand work to an AI. Everything else is detail.
 
 **If you know bash:** chapters 01, 02 and 06 are the ones you will argue
 with. Run `01-bash` twice as `check.sh` does — with the dialect on and off —
-and then read the [collision map](https://github.com/qiangli/bashsharp/blob/main/docs/bashpp-posix-superset-syntax.md)
+and then read the [collision map](https://github.com/bashsharp/bashsharp/blob/main/docs/bashpp-posix-superset-syntax.md)
 for *why* each new shape is safe.
 
 **If you know Go:** chapter 03 shows Go inside shell text (declarations,
@@ -193,7 +193,7 @@ compiler installed — recorded, not described
 
 Each is one sentence, one runnable snippet, and a link. The gate-bearing
 definition of each — the exact suites and numbers — lives in the language
-README and [`docs/claims.md`](https://github.com/qiangli/bashsharp/blob/main/docs/claims.md);
+README and [`docs/claims.md`](https://github.com/bashsharp/bashsharp/blob/main/docs/claims.md);
 this page does not repeat them.
 
 ### 1 · Base — GNU Bash 5.3, a strict superset
@@ -378,10 +378,10 @@ maintainers, after a deliberate change, never to make a red check green.
 
 - [`qiangli/bashy`](https://github.com/qiangli/bashy) — the product you
   install; Bash# is what `bashy --bashsharp` speaks.
-- [`qiangli/bashsharp`](https://github.com/qiangli/bashsharp) — the
+- [`bashsharp/bashsharp`](https://github.com/bashsharp/bashsharp) — the
   language: the five clauses with their gates, design decisions, `ROADMAP.md`,
   `rfcs/`, `docs/claims.md`.
-- [`qiangli/bashsharp-tests`](https://github.com/qiangli/bashsharp-tests) —
+- [`bashsharp/bashsharp-tests`](https://github.com/bashsharp/bashsharp-tests) —
   the conformance suite every snippet here was copied from.
 - [`qiangli/sh`](https://github.com/qiangli/sh) — the engine, a fork of
   [`mvdan/sh`](https://github.com/mvdan/sh).
