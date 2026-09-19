@@ -1,8 +1,11 @@
 name: tour
 # The Bash# tour gate against a PUBLISHED bashy release, on all three OSes.
 # This is the install-matrix: a stranger's machine, the published binary,
-# every chapter diffed against its pinned transcript. Optional chapters
-# SKIP by name when a runner lacks the tool; the job still requires 0 failed.
+# every chapter diffed against its pinned transcript. Nothing SKIPs: bashy
+# provisions every island's toolchain itself, and each OS runs the gate
+# TWICE — `host` (the runner's toolchains on PATH) and `stripped` (PATH holds
+# only the shell utilities the gate uses; on Windows only System32) — because
+# a fence never resolves its tool from PATH, so the two legs must agree.
 #
 # Which release: the latest non-prerelease by default (push / PR / nightly —
 # the badge is the LATEST release's standing), or the tag given to a manual
@@ -32,6 +35,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        leg: [host, stripped]
         include:
           - os: ubuntu-latest
             asset: bashy-linux-amd64.tar.gz
@@ -40,8 +44,10 @@ jobs:
           - os: windows-latest
             asset: bashy-windows-amd64.zip
     runs-on: ${{ matrix.os }}
+    name: tour (${{ matrix.os }}, ${{ matrix.leg }})
     env:
       TAG: ${{ github.event.inputs.tag }}
+      LEG: ${{ matrix.leg }}
     steps:
       - uses: actions/checkout@v4
 
@@ -59,7 +65,20 @@ jobs:
       - name: Tour gate
         if: runner.os != 'Windows'
         shell: bash
-        run: ./check.sh ./bashy
+        run: |
+          if [ "$LEG" = stripped ]; then
+            # PATH = one directory of symlinks to the utilities check.sh itself
+            # runs. No python3, node, cargo, clang, cc or go can be found.
+            min=$RUNNER_TEMP/minpath; mkdir -p "$min"
+            for t in sh uname tr sed grep diff mktemp head printf cat dirname basename cmp rm mkdir sort env cut wc tail ls cp mv chmod touch true false test expr date tee xargs find; do
+              p=$(command -v "$t" 2>/dev/null) && ln -sf "$p" "$min/$t"
+            done
+            export PATH=$min
+            for t in python3 node cargo rustc clang cc go; do command -v "$t" >/dev/null 2>&1 && { echo "$t still on PATH"; exit 1; }; done
+          fi
+          ./check.sh ./bashy
+          # --prepare after the run is a no-op: same rows, nothing downloaded.
+          ./bashy check --prepare 04-islands/*.bsh 04-islands/go/go.bsh 03-go/03-whole-program.go
 
       # ── windows: only what Windows ships (curl.exe, tar.exe); bashy is the shell ──
       - name: Download the bashy release asset (Windows)
@@ -79,5 +98,14 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
+          if ($env:LEG -eq "stripped") {
+            # Only what Windows ships: no hostedtoolcache python/node/go, no LLVM, no cargo.
+            $env:Path = "$env:SystemRoot\System32;$env:SystemRoot"
+            foreach ($t in "python3","node","cargo","rustc","clang","go") {
+              if (Get-Command $t -ErrorAction SilentlyContinue) { Write-Error "$t still on PATH"; exit 1 }
+            }
+          }
           & .\bashy.exe ./check.sh "$PWD\bashy.exe"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & .\bashy.exe check --prepare 04-islands/python.bsh 04-islands/typescript.bsh 04-islands/rust.bsh 04-islands/c.bsh 04-islands/cpp.bsh 04-islands/go/go.bsh 03-go/03-whole-program.go
           exit $LASTEXITCODE

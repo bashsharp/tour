@@ -68,7 +68,7 @@ And the person sets the pace — you show, run, explain, and **wait**.
 | `03-go/02-funcs.bsh` | `bashy --bashsharp …` | `if`/`switch`/`for`/`return` inside a func body (top-level Go `if {` in shell text is planned, not shipped) |
 | `03-go/03-whole-program.go` | `bashy --bashsharp --source=go 03-go/03-whole-program.go` | a whole Go 1.27 program with generics; where the corpus numbers are measured |
 | `03-go/04-transpile.bsh` | run it; then `bashy transpile --bashsharp 03-go/04-transpile.bsh -o /tmp/t.go` and `cat /tmp/t.go` | ordinary Go comes out; building it needs go ≥ 1.27 and the engine's `shellrt` (see README) |
-| `04-islands/*.bsh` (`go/go.bsh` sits next to its `go.mod`) | `bashy --bashsharp 04-islands/python.bsh` etc. | a fenced block becomes callables; each language runs on the person's own compiler — SKIP the ones the gate skipped |
+| `04-islands/*.bsh` (`go/go.bsh` sits next to its `go.mod`) | `bashy --bashsharp 04-islands/python.bsh` etc. | a fenced block becomes callables; bashy provisions each language's toolchain itself (pinned, verified, cached — never the person's `PATH`), so the first island run downloads once; `bashy check --prepare 04-islands/*.bsh` does that ahead of time |
 | `05-agentic/01-scope.bsh` | `bashy --bashsharp …` | calling an agentic action OUTSIDE an `agentic { }` scope is refused (exit 1); inside, it runs |
 | `05-agentic/02-forms.bsh` | `bashy --bashsharp …` | the spellings: `agentic function`, typed `agentic func`, a typed method, the `agentic { }` scope |
 | `05-agentic/03-contracts.bsh` | `bashy --bashsharp …` | `@require` before (fail → 3, body never runs), `@ensure` after (fail → 3), `$RESULT`, checks don't leak |
@@ -106,13 +106,13 @@ file is what `check.sh` reads.
 
 ## What is known-failing, and why you do not "fix" it
 
-On Windows the gate may print `XFAIL` for the Python, Rust, C and C++
-islands with a card id: the toolchain is present but bashy cannot drive it
-there yet (Store `python3` alias, `link` applet shadowing MSVC's linker,
-clang without SDK includes). Tell the person it is a known, tracked
-limitation of the release, not of their machine, and move on. Do not edit
-`cases.tsv` to make the count look better; an unexpected PASS there fails
-the gate on purpose so the marker is removed with the fix.
+A case may carry an `xfail` marker in `cases.tsv` naming an OS and a card:
+the gate prints `XFAIL` for it there. Tell the person it is a known, tracked
+limitation of the release, not of their machine, and move on. There are no
+markers today. Do not edit `cases.tsv` to make the count look better; an
+unexpected PASS there fails the gate on purpose so the marker is removed
+with the fix. A fenced island that fails for a missing tool is a real
+failure now (bashy provisions the toolchains itself) — report it.
 
 ## Report
 

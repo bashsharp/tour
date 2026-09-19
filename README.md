@@ -8,12 +8,13 @@ library, and `agentic` where you need a model — with contracts so a model's
 output is judged, never trusted.* It runs inside [`bashy`](https://github.com/qiangli/bashy),
 a pure-Go Bash 5.3 that runs on Linux, macOS and Windows.
 
-> **Alpha.** Everything in this repo runs on **bashy v0.23.0** (the first
-> Bash# release) and later — the [CI badge](https://github.com/qiangli/bashsharp-tour/actions)
-> is this gate against the latest release on Linux, macOS and Windows, and
-> it is green (Windows carries four *known-failing* fenced-island cases,
-> named by card, for toolchains the shell cannot yet drive there — see
-> [§ What the gate says on your machine](#what-the-gate-says-on-your-machine)).
+> **Alpha.** Everything in this repo runs on **bashy v0.24.0** and later
+> (the fenced islands need no toolchain on your machine from v0.24.0; the
+> first Bash# release was v0.23.0) — the
+> [CI badge](https://github.com/qiangli/bashsharp-tour/actions) is this gate
+> against the latest release on Linux, macOS and Windows, run twice per OS:
+> with the runner's toolchains on `PATH` and with every one of them stripped
+> off it, and the two must agree.
 > Syntax may still change before 1.0, and the way to change it is an RFC in the
 > language repo, [`qiangli/bashsharp`](https://github.com/qiangli/bashsharp).
 > If something here does not match what your binary does, that is a bug in
@@ -69,17 +70,28 @@ on the binary alone, verified on a Windows 11 machine with no git, no Go and
 no C compiler, on a Mac with only the system tools, and on a bare Ubuntu
 droplet.
 
-Optional chapters use tools you may already have, and `./check.sh` says
-exactly which it found and skips the rest by name:
+**No toolchain is needed for the islands either.** A fence never resolves
+its tool from your `PATH`: bashy provisions what the island uses the first
+time it runs — downloaded from the vendor's release, checksum-verified
+against a pin in bashy's source, cached under your user cache dir — and a
+tool you happen to have installed is simply not consulted, so the same
+program means the same thing on every machine. One network round trip per
+toolchain, once; `bashy check --prepare 04-islands/*.bsh` pays it ahead of
+time (a CI image, an air-gapped box) and is a no-op after that.
 
-| chapter | needs |
-|---|---|
-| `03-go/03-whole-program.go` (`--source=go`) and the Go island | a Go SDK **≥ 1.27** on `PATH` |
-| the Python island | `python3` (a real interpreter — on Windows the Microsoft Store *alias* named `python3` is not enough) |
-| the TypeScript island | `node` and the `typescript` npm package (`npm install -g typescript`) |
-| the Rust island | `cargo` |
-| the C and C++ islands | **clang** — the island is analysed through Clang's AST; a GCC `cc` cannot serve it |
-| the lowered build of `04-transpile` | Go ≥ 1.27 and a checkout of `qiangli/sh` (`BASHSHARP_SH_ROOT`) |
+| chapter | bashy provisions | license |
+|---|---|---|
+| `03-go/03-whole-program.go` (`--source=go`), the Go island, `transpile` | Go 1.27.1 | BSD-3 |
+| the Python island | a uv-managed CPython 3.13 (a project `.python-version` or `.venv` wins) | uv MIT/Apache-2.0, CPython PSF-2.0 |
+| the TypeScript island | Node 22 + `typescript@5.9.3` (a project-local `typescript` wins) | MIT, Apache-2.0 |
+| the Rust island | a rustup `stable` toolchain, linked through zig cc | MIT/Apache-2.0 |
+| the C and C++ islands | `zig cc` / `zig c++` — Clang with bundled libc headers, so no SDK to find | MIT |
+| the lowered build of `04-transpile` | the same Go, plus a checkout of `qiangli/sh` (`BASHSHARP_SH_ROOT`) | — |
+
+To use a specific program instead, name it: `BASHPP_PYTHON`, `BASHPP_GO`,
+`BASHPP_CC`/`BASHPP_CXX`, `BASHPP_RUSTC`, `BASHPP_NODE`,
+`BASHPP_TYPESCRIPT_MODULE`. That is the one escape, per tool, and the run's
+plan records it.
 
 If your shell refuses a command with an "unsupported locale" message, set
 `LC_ALL=C.UTF-8`: bashy carries `C.UTF-8` (any platform) and the macOS default
@@ -89,12 +101,11 @@ If your shell refuses a command with an "unsupported locale" message, set
 
 `./check.sh` (on Windows: `bashy ./check.sh`) ends with one line:
 `tour: N passed, F failed, S skipped, K known-failing`. **`failed` must be 0.**
-`skipped` names a tool you don't have. `known-failing` appears only on
-Windows for the fenced islands that need a toolchain bashy cannot yet drive
-there (the Store `python3` alias; `rustc` linking through bashy's `link`
-applet instead of MSVC's; clang without SDK include paths) — tracked, named
-in the output, and turned into a hard failure the day they start passing so
-the marker cannot rot.
+Nothing is skipped for a missing tool — bashy provisions it — so on a
+machine that has never run an island the first gate is slower (the
+downloads) and every later one is not. `known-failing` is reserved for a
+case pinned to a card in `cases.tsv`; there are none today, and an
+unexpected pass there fails the gate on purpose so a marker cannot rot.
 
 ## Step by step
 
@@ -210,7 +221,7 @@ func twice(n int) int { return n * 2 }
 printf '%d\n' twice(x)
 ```
 ```sh
-bashy --bashsharp --source=go 03-go/03-whole-program.go   # needs a Go SDK on PATH
+bashy --bashsharp --source=go 03-go/03-whole-program.go   # bashy's own Go 1.27 — none needed on PATH
 bashy transpile --bashsharp 03-go/04-transpile.bsh -o t.go
 ```
 → [`03-go/`](03-go/)
