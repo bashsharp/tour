@@ -1,0 +1,16 @@
+# GitHub Pages rendering of the tour at https://bashsharp.github.io/tour/
+# The repo is the source of truth; this only renders README.md and gives
+# each chapter directory an index (Pages serves no directory listings).
+title: The Bash# tour
+description: ten minutes with bashy --bashsharp, on Linux, macOS and Windows
+theme: jekyll-theme-minimal
+logo: ""
+show_downloads: false
+markdown: kramdown
+exclude:
+  - check.sh
+  - cases.tsv
+  - SKILL.md
+  - LICENSE
+  - .gitattributes
+  - README.md

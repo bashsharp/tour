@@ -1,6 +1,6 @@
 # Bash# tour — getting started
 
-[![tour](https://github.com/bashsharp/bashsharp-tour/actions/workflows/tour.yml/badge.svg)](https://github.com/bashsharp/bashsharp-tour/actions/workflows/tour.yml)
+[![tour](https://github.com/bashsharp/tour/actions/workflows/tour.yml/badge.svg)](https://github.com/bashsharp/tour/actions/workflows/tour.yml)
 
 **Bash#** ("bash sharp") is a programming language for agents: *the bash you
 already know, Go where you need types, any fenced language where you need a
@@ -11,14 +11,14 @@ a pure-Go Bash 5.3 that runs on Linux, macOS and Windows.
 > **Alpha.** Everything in this repo runs on **bashy v0.24.0** and later
 > (the fenced islands need no toolchain on your machine from v0.24.0; the
 > first Bash# release was v0.23.0) — the
-> [CI badge](https://github.com/bashsharp/bashsharp-tour/actions) is this gate
+> [CI badge](https://github.com/bashsharp/tour/actions) is this gate
 > against the latest release on Linux, macOS and Windows, run twice per OS:
 > with the runner's toolchains on `PATH` and with every one of them stripped
 > off it, and the two must agree.
 > Syntax may still change before 1.0, and the way to change it is an RFC in the
 > language repo, [`bashsharp/bashsharp`](https://github.com/bashsharp/bashsharp).
 > If something here does not match what your binary does, that is a bug in
-> one of them — [open an issue](https://github.com/bashsharp/bashsharp-tour/issues)
+> one of them — [open an issue](https://github.com/bashsharp/tour/issues)
 > with the output of `./check.sh`.
 
 This repo is a set of small, complete programs — one directory per idea (seven, counting the bashy command ring) —
@@ -117,8 +117,8 @@ a compiler. Every step is one command, and every command has a known answer.
 
 1. **Get the tour.**
    ```sh
-   git clone https://github.com/bashsharp/bashsharp-tour
-   cd bashsharp-tour
+   git clone https://github.com/bashsharp/tour
+   cd tour
    ```
 2. **Prove your install.** This runs all 27 programs and diffs each against
    its transcript:
@@ -155,7 +155,7 @@ a compiler. Every step is one command, and every command has a known answer.
    file ending in `.bsh` with `#!/usr/bin/env -S bashy --bashsharp` on line
    one, and run it.
 7. **Tell us what confused you.** During the alpha that is the most useful
-   contribution there is: [issues](https://github.com/bashsharp/bashsharp-tour/issues)
+   contribution there is: [issues](https://github.com/bashsharp/tour/issues)
    here for the tour, the language repo's `rfcs/` for the syntax you wish you had.
 
 **If you are new to programming:** you only need chapters 00, 01, 02 and 05
