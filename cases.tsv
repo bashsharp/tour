@@ -1,9 +1,10 @@
 # id	mode	file	needs	rc	xfail
 # mode: run = bashy --bashsharp FILE · off = bashy --no-bashsharp FILE · posix = bashy --posix FILE
 #       gosrc = bashy --bashsharp --source=go FILE · check = bashy check --bashsharp FILE
-# needs: - | python3 | typescript | cargo | cc | c++ | go
+# needs: - | python3 | typescript | cargo | cc | c++ | go — what bashy PROVISIONS for the
+#        case (pinned, verified, cached on first use); never a reason to skip
 # rc: the exit status the transcript is pinned with
-# xfail: OS on which the case is a KNOWN failure with its card (windows=todo:1ea28005); an
+# xfail: OS on which the case is a KNOWN failure with its card (e.g. windows=todo:<id>; none today); an
 #        unexpected pass there fails the gate so the marker is removed when the fix lands
 quickstart/judge	run	00-quickstart/judge.bsh	-	0
 bash/on	run	01-bash/bash-is-bash.bsh	-	0
@@ -14,11 +15,11 @@ go/values	run	03-go/01-values.bsh	-	0
 go/funcs	run	03-go/02-funcs.bsh	-	0
 go/whole-program	gosrc	03-go/03-whole-program.go	go	0
 go/transpile-direct	run	03-go/04-transpile.bsh	-	0
-islands/python	run	04-islands/python.bsh	python3	0	windows=todo:1ea28005
+islands/python	run	04-islands/python.bsh	python3	0
 islands/typescript	run	04-islands/typescript.bsh	typescript	0
-islands/rust	run	04-islands/rust.bsh	cargo	0	windows=todo:1ea28005
-islands/c	run	04-islands/c.bsh	cc	0	windows=todo:1ea28005
-islands/cpp	run	04-islands/cpp.bsh	c++	0	windows=todo:1ea28005
+islands/rust	run	04-islands/rust.bsh	cargo	0
+islands/c	run	04-islands/c.bsh	cc	0
+islands/cpp	run	04-islands/cpp.bsh	c++	0
 islands/go	run	04-islands/go/go.bsh	go	0
 islands/bash	run	04-islands/bash.bsh	-	0
 islands/sh	run	04-islands/sh.bsh	-	0

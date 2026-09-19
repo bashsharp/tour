@@ -10,8 +10,15 @@
 #   BASHSHARP_SH_ROOT=/path/to/sh ./check.sh  # also build the lowered Go (needs go >= 1.27)
 #   ./check.sh --pin                 # re-pin every transcript from this binary (maintainers)
 #
-# A case whose runtime is missing is SKIPPED by name with the reason. A SKIP
-# never counts as a pass; the summary line reports all three numbers.
+# No toolchain is needed on the host: bashy provisions what an island uses
+# (a pinned Go, zig cc, a uv-managed CPython, Node + the typescript package,
+# a rustup toolchain — downloaded and checksum-verified on first use, then
+# cached). A fence never resolves its tool from PATH, so a host tool that is
+# present is invisible and one that is absent is not a reason to skip: the
+# gate runs every case, and the same binary must produce the same transcript
+# with the toolchains on PATH and with them stripped (the CI's two legs).
+# Nothing is SKIPPED for a missing tool; the `needs` column in cases.tsv
+# records what bashy provisions for the case.
 set -u
 here=$(cd "$(dirname "$0")" && pwd)
 export BASHY_HINTS=off
@@ -21,6 +28,8 @@ case "$bashy" in
 /*|[A-Za-z]:*) ;;                                                        # already absolute (unix, or a Windows drive path)
 */*) bashy=$(cd "$(dirname "$bashy")" && pwd)/$(basename "$bashy") ;;   # relative: cases run from their own directory
 esac
+# `bashy` inside a case means the binary under test, wherever it sits.
+case "$bashy" in */*) PATH=$(dirname "$bashy"):$PATH; export PATH ;; esac
 flag=${BASHSHARP_FLAG:-}
 if [ -z "$flag" ]; then
     # A binary from before the rename knows the old spelling only.
@@ -32,35 +41,10 @@ noflag=--no-${flag#--}
 pass=0; fail=0; skip=0; xfail=0; rc=0
 osname=$(uname -s 2>/dev/null | tr 'A-Z' 'a-z'); case "$osname" in linux|darwin) ;; *) osname=windows ;; esac
 
-have() { command -v "$1" >/dev/null 2>&1; }
-# The TypeScript compiler module, if any: $BASHPP_TYPESCRIPT_MODULE or the global npm one.
-ts_module() {
-    m=${BASHPP_TYPESCRIPT_MODULE:-}
-    [ -n "$m" ] || { g=$(npm root -g 2>/dev/null); [ -n "$g" ] && [ -d "$g/typescript" ] && m=$g/typescript; }
-    [ -n "$m" ] && [ -f "$m/package.json" ] && [ -d "$m/lib" ] && printf '%s' "$m"
-}
-# Exported HERE, not inside need_ok: need_ok runs in a $(...) subshell and an
-# export there never reaches the runs.
-m=$(ts_module); [ -n "$m" ] && export BASHPP_TYPESCRIPT_MODULE="$m"
-need_ok() { # prints the reason when the need is NOT met
-    case "$1" in
-    -) ;;
-    python3) have python3 || echo "no python3 on PATH" ;;
-    cargo) have cargo || echo "no cargo on PATH (install Rust)" ;;
-    # The C/C++ islands are analysed through Clang's AST (-Xclang -ast-dump):
-    # a GCC `cc` cannot serve them, so the need is clang, not any cc.
-    cc) { have clang || { have cc && cc --version 2>/dev/null | grep -qi clang; }; } || echo "no clang on PATH (the C island uses Clang's AST; GCC cannot serve it)" ;;
-    c++) { have clang++ || { have c++ && c++ --version 2>/dev/null | grep -qi clang; }; } || echo "no clang++ on PATH (the C++ island uses Clang's AST; GCC cannot serve it)" ;;
-    go)
-        gv=$(GOTOOLCHAIN=local go version 2>/dev/null | sed -n 's/^go version go\([0-9]*\.[0-9]*\).*/\1/p')
-        if [ -z "$gv" ]; then echo "no go on PATH (the Go island and --source=go need a Go SDK >= 1.27; bashy provisions one for builds, not yet for these)"
-        elif [ "$(printf '%s\n1.27\n' "$gv" | sort -V | head -1)" != 1.27 ]; then echo "go $gv on PATH is older than 1.27 (the Go island and --source=go need >= 1.27)"; fi ;;
-    typescript)
-        have node || { echo "no node on PATH"; return; }
-        m=$(ts_module)
-        [ -n "$m" ] || echo "no typescript package (npm install -g typescript, or set BASHPP_TYPESCRIPT_MODULE)" ;;
-    esac
-}
+# The island toolchains come from bashy, never from this host: a BASHPP_*
+# override inherited from the environment would make the transcript depend on
+# the host, so the gate runs without them.
+unset BASHPP_PYTHON BASHPP_GO BASHPP_CC BASHPP_CXX BASHPP_RUSTC BASHPP_NODE BASHPP_BUN BASHPP_TYPESCRIPT_RUNTIME BASHPP_TYPESCRIPT_MODULE
 invoke() { # mode file -> runs in the file's directory, prints stdout+stderr, returns status
     dir=$(dirname "$here/$2"); base=$(basename "$2")
     case "$1" in
@@ -94,8 +78,6 @@ while IFS="$(printf '\t')" read -r id mode file needs want_rc xfail_spec; do
     case "$id" in ''|'#'*) continue ;; esac
     exp="$here/${file%.*}.expected"
     [ "$mode" = off ] && exp="$here/${file%.*}.off.expected"
-    reason=$(need_ok "$needs")
-    if [ -n "$reason" ]; then echo "tour: SKIP $id ($reason)"; skip=$((skip+1)); continue; fi
     out=$(invoke "$mode" "$file"); got=$?
     if [ "$pin" -eq 1 ]; then
         { printf '# rc=%s\n' "$got"; printf '%s\n' "$out"; } > "$exp"; echo "tour: PINNED $id (rc=$got)"; continue
@@ -103,19 +85,17 @@ while IFS="$(printf '\t')" read -r id mode file needs want_rc xfail_spec; do
     report "$id" "$exp" "$out" "$got" "$want_rc" "${xfail_spec:-}"
 done < "$here/cases.tsv"
 
-# The lowered build of 03-go/04-transpile.bsh: needs go >= 1.27 on PATH and a
-# checkout of github.com/qiangli/sh (the emitted Go imports its shellrt runtime).
+# The lowered build of 03-go/04-transpile.bsh: builds the emitted Go with
+# bashy's own provisioned Go (`bashy go`, >= 1.27) and needs a checkout of
+# github.com/qiangli/sh (the emitted Go imports its shellrt runtime).
 if [ "$pin" -eq 0 ]; then
-    gover=$(GOTOOLCHAIN=local go version 2>/dev/null | sed -n 's/^go version go\([0-9]*\.[0-9]*\).*/\1/p')
-    if [ -z "$gover" ] || [ "$(printf '%s\n1.27\n' "$gover" | sort -V | head -1)" != 1.27 ]; then
-        echo "tour: SKIP go/transpile-lowered (needs go >= 1.27 on PATH; found '${gover:-none}')"; skip=$((skip+1))
-    elif [ -z "${BASHSHARP_SH_ROOT:-}" ] || [ ! -d "$BASHSHARP_SH_ROOT/lower/shellrt" ]; then
+    if [ -z "${BASHSHARP_SH_ROOT:-}" ] || [ ! -d "$BASHSHARP_SH_ROOT/lower/shellrt" ]; then
         echo "tour: SKIP go/transpile-lowered (set BASHSHARP_SH_ROOT to a github.com/qiangli/sh checkout: the lowered program imports its shellrt runtime)"; skip=$((skip+1))
     else
         tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
         printf 'module tour\n\ngo 1.27\n\nrequire mvdan.cc/sh/v3 v3.0.0\nreplace mvdan.cc/sh/v3 => %s\n' "$BASHSHARP_SH_ROOT" >"$tmp/go.mod"
         if (cd "$tmp" && GOFLAGS=-mod=mod "$bashy" transpile "$flag" "$here/03-go/04-transpile.bsh" -o "$tmp/t.go" >"$tmp/log" 2>&1 \
-             && GOWORK=off GOFLAGS=-mod=mod go build -o program t.go >>"$tmp/log" 2>&1) \
+             && GOWORK=off GOFLAGS=-mod=mod "$bashy" go build -o program t.go >>"$tmp/log" 2>&1) \
            && out=$("$tmp/program" 2>&1) && [ "$out" = "$(sed 1d "$here/03-go/04-transpile.expected")" ]; then
             echo "tour: PASS go/transpile-lowered (built as Go, same transcript)"; pass=$((pass+1))
         else
