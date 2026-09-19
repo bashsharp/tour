@@ -28,8 +28,9 @@ case "$bashy" in
 /*|[A-Za-z]:*) ;;                                                        # already absolute (unix, or a Windows drive path)
 */*) bashy=$(cd "$(dirname "$bashy")" && pwd)/$(basename "$bashy") ;;   # relative: cases run from their own directory
 esac
-# `bashy` inside a case means the binary under test, wherever it sits.
-case "$bashy" in */*) PATH=$(dirname "$bashy"):$PATH; export PATH ;; esac
+# `bashy` inside a case means the binary under test, wherever it sits (a
+# Windows path spells its directories with backslashes).
+case "$bashy" in */*|*\\*) PATH=$(dirname "$bashy"):$PATH; export PATH ;; esac
 flag=${BASHSHARP_FLAG:-}
 if [ -z "$flag" ]; then
     # A binary from before the rename knows the old spelling only.
@@ -39,6 +40,14 @@ if [ -z "$flag" ]; then
 fi
 noflag=--no-${flag#--}
 pass=0; fail=0; skip=0; xfail=0; rc=0
+# Provision the islands' toolchains BEFORE the cases (`bashy check --prepare`):
+# a first-use download prints its notes, and a transcript must not depend on
+# whether this machine has run an island before. Optional for a person; the
+# gate does it so its diffs are only ever about the program.
+if "$bashy" check --help 2>/dev/null | grep -q -- --prepare; then
+    echo "tour: provisioning the island toolchains (bashy check --prepare; cached after the first run)"
+    "$bashy" check --prepare "$here"/04-islands/*.bsh "$here"/04-islands/go/go.bsh "$here"/03-go/03-whole-program.go || { echo "tour: FAIL check --prepare" >&2; exit 1; }
+fi
 osname=$(uname -s 2>/dev/null | tr 'A-Z' 'a-z'); case "$osname" in linux|darwin) ;; *) osname=windows ;; esac
 
 # The island toolchains come from bashy, never from this host: a BASHPP_*

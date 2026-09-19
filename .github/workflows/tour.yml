@@ -35,6 +35,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
         leg: [host, stripped]
         include:
           - os: ubuntu-latest
@@ -77,8 +78,6 @@ jobs:
             for t in python3 node cargo rustc clang cc go; do command -v "$t" >/dev/null 2>&1 && { echo "$t still on PATH"; exit 1; }; done
           fi
           ./check.sh ./bashy
-          # --prepare after the run is a no-op: same rows, nothing downloaded.
-          ./bashy check --prepare 04-islands/*.bsh 04-islands/go/go.bsh 03-go/03-whole-program.go
 
       # ── windows: only what Windows ships (curl.exe, tar.exe); bashy is the shell ──
       - name: Download the bashy release asset (Windows)
@@ -105,7 +104,6 @@ jobs:
               if (Get-Command $t -ErrorAction SilentlyContinue) { Write-Error "$t still on PATH"; exit 1 }
             }
           }
+          $env:Path = "$PWD;" + $env:Path
           & .\bashy.exe ./check.sh "$PWD\bashy.exe"
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          & .\bashy.exe check --prepare 04-islands/python.bsh 04-islands/typescript.bsh 04-islands/rust.bsh 04-islands/c.bsh 04-islands/cpp.bsh 04-islands/go/go.bsh 03-go/03-whole-program.go
           exit $LASTEXITCODE
