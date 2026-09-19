@@ -46,7 +46,9 @@ pass=0; fail=0; skip=0; xfail=0; rc=0
 # gate does it so its diffs are only ever about the program.
 if "$bashy" check --help 2>/dev/null | grep -q -- --prepare; then
     echo "tour: provisioning the island toolchains (bashy check --prepare; cached after the first run)"
-    "$bashy" check --prepare "$here"/04-islands/*.bsh "$here"/04-islands/go/go.bsh "$here"/03-go/03-whole-program.go || { echo "tour: FAIL check --prepare" >&2; exit 1; }
+    # Relative paths from the tour root: a Windows bashy spells $here in
+    # MSYS form, which the OS cannot open and a glob does not expand.
+    (cd "$here" && "$bashy" check --prepare 04-islands/python.bsh 04-islands/typescript.bsh 04-islands/rust.bsh 04-islands/c.bsh 04-islands/cpp.bsh 04-islands/go/go.bsh 03-go/03-whole-program.go) || { echo "tour: FAIL check --prepare" >&2; exit 1; }
 fi
 osname=$(uname -s 2>/dev/null | tr 'A-Z' 'a-z'); case "$osname" in linux|darwin) ;; *) osname=windows ;; esac
 
