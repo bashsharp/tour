@@ -1,3 +1,7 @@
+#!/usr/bin/env -S bashy --bashsharp
+# The checker walks typed declarations inside a complete shell program.
+echo before
 func deref(p *int) int {
     return *p
 }
+echo after
