@@ -1,0 +1,25 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A Dockerfile as a fence. The row's processor is the container engine bashy
+# provisions (podman): `build` returns the image id and declares net,write —
+# it pulls and writes to the image store — and `run` declares exec. A
+# read-only @guard denies `build` with 126 before the engine is asked. This
+# case needs a running engine (`bashy podman info`); GitHub's macOS and
+# Windows runners have none, so the tour marks it known-failing there and
+# the transcript is pinned from Linux.
+
+~~~dockerfile as img
+FROM docker.io/library/alpine:3.20
+CMD ["echo", "hello from a fenced image"]
+~~~
+
+@guard("read")
+func rehearse() {
+  x := img.build()
+  echo "build under a read cap -> $? (net and write are not in the guard)"
+}
+rehearse()
+
+id := img.build()
+echo "build -> $? (an image id, ${#id} hex chars)"
+out := img.run("$id")
+echo "run -> $? ($out)"

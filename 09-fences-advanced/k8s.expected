@@ -1,0 +1,5 @@
+# rc=0
+play -> 0
+app.down: declared effects exec,destroy exceed the guard (destroy not allowed by exec)
+down under an exec cap -> 126 (destroy is not in the guard)
+down -> 0

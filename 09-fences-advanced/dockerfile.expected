@@ -1,0 +1,5 @@
+# rc=0
+img.build: declared effects net,write exceed the guard (net,write not allowed by read)
+build under a read cap -> 126 (net and write are not in the guard)
+build -> 0 (an image id, 64 hex chars)
+run -> 0 (hello from a fenced image)

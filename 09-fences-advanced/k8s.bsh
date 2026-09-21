@@ -1,0 +1,34 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A Kubernetes manifest as a fence. The row's processor is kubectl for a
+# cluster (apply, delete, get, diff — all `remote`) and podman for the local
+# target: `play` runs the manifest as pods on this machine (exec,write) and
+# `down` tears them down (exec,destroy). Locally there is no cluster in the
+# tour, so this case plays and tears down; `down` under a guard without
+# `destroy` is denied with 126 first. Needs a running engine, as
+# dockerfile.bsh does.
+
+~~~k8s as app
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fenced
+spec:
+  restartPolicy: Never
+  containers:
+    - name: hello
+      image: docker.io/library/alpine:3.20
+      command: ["echo", "hello from a fenced pod"]
+~~~
+
+p := app.play()
+echo "play -> $?"
+
+@guard("exec")
+func rehearse() {
+  x := app.down()
+  echo "down under an exec cap -> $? (destroy is not in the guard)"
+}
+rehearse()
+
+d := app.down()
+echo "down -> $?"

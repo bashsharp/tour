@@ -48,7 +48,7 @@ if "$bashy" check --help 2>/dev/null | grep -q -- --prepare; then
     echo "tour: provisioning the island toolchains (bashy check --prepare; cached after the first run)"
     # Relative paths from the tour root: a Windows bashy spells $here in
     # MSYS form, which the OS cannot open and a glob does not expand.
-    (cd "$here" && "$bashy" check --prepare 04-islands/python.bsh 04-islands/typescript.bsh 04-islands/rust.bsh 04-islands/c.bsh 04-islands/cpp.bsh 04-islands/go/go.bsh 03-go/03-whole-program.go) || { echo "tour: FAIL check --prepare" >&2; exit 1; }
+    (cd "$here" && "$bashy" check --prepare 04-islands/python.bsh 04-islands/typescript.bsh 04-islands/rust.bsh 04-islands/c.bsh 04-islands/cpp.bsh 04-islands/go/go.bsh 03-go/03-whole-program.go 09-fences-advanced/builder.bsh 09-fences-advanced/tf.bsh 09-fences-advanced/manifests/cargo/build.bsh 09-fences-advanced/manifests/pyproject/build.bsh 09-fences-advanced/manifests/gomod/build.bsh 09-fences-advanced/manifests/cmake/build.bsh 09-fences-advanced/manifests/package/build.bsh) || { echo "tour: FAIL check --prepare" >&2; exit 1; }
 fi
 osname=$(uname -s 2>/dev/null | tr 'A-Z' 'a-z'); case "$osname" in linux|darwin) ;; *) osname=windows ;; esac
 
@@ -68,7 +68,7 @@ invoke() { # mode file -> runs in the file's directory, prints stdout+stderr, re
 }
 report() { # id expected-file actual-text actual-rc expected-rc xfail-spec
     want=$(sed 1d "$2")
-    xf=""; case "${6:-}" in "$osname="*) xf=${6#*=} ;; esac
+    xf=""; for spec in $(printf '%s' "${6:-}" | tr ';' ' '); do case "$spec" in "$osname="*) xf=${spec#*=} ;; esac; done
     if [ "$3" = "$want" ] && [ "$4" -eq "$5" ]; then
         if [ -n "$xf" ]; then
             echo "tour: XPASS $1 — marked xfail on $osname ($xf) but PASSED: remove the marker" >&2
