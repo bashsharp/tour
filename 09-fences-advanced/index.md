@@ -35,8 +35,8 @@ shared runners. The tour never marks a case that fails *by which machine
 it runs on* as known-failing, so the three wait for the fixes in bashy
 (cards `4995ee3e`, `18f7a7aa`, `dd498d73`).
 
-Three manifest cases are known-failing on Windows with a card each: the
-`pyproject` row keeps the program's CR in its value (`7373d5ba`), the
+Four manifest cases are known-failing on Windows: the `pyproject` and
+`package` rows keep the program's CR in their value (`7373d5ba`), the
 `gomod` row's `go` is handed a re-spelled `TMP` (`edba6a1e`), and the
 `makefile` row's make runs its recipes through `/bin/sh` (`041dd280`).
 

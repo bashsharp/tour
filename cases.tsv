@@ -49,4 +49,4 @@ advanced/k8s	run	09-fences-advanced/k8s.bsh	podman	0	darwin=todo:9e360c57;window
 manifests/pyproject	run	09-fences-advanced/manifests/pyproject/build.bsh	python3	0	windows=todo:7373d5ba
 manifests/gomod	run	09-fences-advanced/manifests/gomod/build.bsh	go	0	windows=todo:edba6a1e
 manifests/makefile	run	09-fences-advanced/manifests/makefile/build.bsh	-	0	windows=todo:041dd280
-manifests/package	run	09-fences-advanced/manifests/package/build.bsh	typescript	0
+manifests/package	run	09-fences-advanced/manifests/package/build.bsh	typescript	0	windows=todo:7373d5ba

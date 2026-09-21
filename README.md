@@ -113,8 +113,8 @@ directory is rewritten to a literal `$HOME`, so `bashy` is not found from
 inside the script; pre-existing, not an island); the two container-engine
 cases of `09-fences-advanced` on macOS and Windows (GitHub's runners there
 have no engine; with `bashy podman machine start` done on your own box they
-pass); and three manifest rows on Windows (a CR kept in a value, a
-re-spelled `TMP`, make recipes run through `/bin/sh` — one card each in
+pass); and four manifest rows on Windows (a CR kept in a value — two rows —,
+a re-spelled `TMP`, make recipes run through `/bin/sh`; the cards are in
 `cases.tsv`) — and an unexpected pass there fails the gate on purpose so a
 marker cannot rot.
 

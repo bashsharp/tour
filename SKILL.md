@@ -86,7 +86,7 @@ And the person sets the pace — you show, run, explain, and **wait**.
 | `08-text-fences/registered.bsh` | `bashy --bashsharp 08-text-fences/registered.bsh` | `words.bsh` names a runner (`!awk-runner`) that is REFUSED until registered as a command in a scratch ring (PATH is never consulted), then answers; xfail on Windows with `commands/register` |
 | `09-fences-advanced/builder.bsh` | `bashy --bashsharp 09-fences-advanced/builder.bsh` | the rod: Zig (no fence) compiled by `bashy zig` through an inline `func` runner — the shape that lowers; `run` denied 126 under a read cap |
 | `09-fences-advanced/dockerfile.bsh`, `k8s.bsh` | `bashy --bashsharp 09-fences-advanced/dockerfile.bsh` | need a RUNNING engine (`bashy podman info`): build → an image id, run → one line; play/down a pod; `build` and `down` denied 126 under caps without their atoms; xfail on darwin/windows CI legs (no engine there) |
-| `09-fences-advanced/manifests/*/build.bsh` | `bashy --bashsharp 09-fences-advanced/manifests/pyproject/build.bsh` etc. | a script carrying its pyproject.toml / go.mod / Makefile / package.json; the toolchain's verbs run from the case's directory and the directory stays byte-identical (`git status` clean); three are xfail on Windows with a card each (`cases.tsv`) |
+| `09-fences-advanced/manifests/*/build.bsh` | `bashy --bashsharp 09-fences-advanced/manifests/pyproject/build.bsh` etc. | a script carrying its pyproject.toml / go.mod / Makefile / package.json; the toolchain's verbs run from the case's directory and the directory stays byte-identical (`git status` clean); all four are xfail on Windows with a card (`cases.tsv`) |
 
 The mode, needs and expected status of every file are in `cases.tsv`; that
 file is what `check.sh` reads.
@@ -121,8 +121,8 @@ not found on a PATH entry under the profile directory; not an island); the
 two engine cases `advanced/dockerfile` and `advanced/k8s` on darwin and
 windows (GitHub's macOS/Windows runners have no container engine; on a
 machine with `bashy podman machine start` done they pass); and
-`manifests/pyproject`, `manifests/gomod`, `manifests/makefile` on windows
-(three bashy-side cards named in `cases.tsv`). Do not edit `cases.tsv` to make the count look better; an
+`manifests/pyproject`, `manifests/package`, `manifests/gomod`,
+`manifests/makefile` on windows (bashy-side cards named in `cases.tsv`). Do not edit `cases.tsv` to make the count look better; an
 unexpected PASS there fails the gate on purpose so the marker is removed
 with the fix. A fenced island that fails for a missing tool is a real
 failure now (bashy provisions the toolchains itself) — report it.
