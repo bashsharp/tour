@@ -1,0 +1,36 @@
+#!/usr/bin/env -S bashy --bashsharp
+# The rod, compiler shape: a language bashy has no fence for (Zig), compiled
+# by a toolchain it already provisions for the C islands. The runner is an
+# inline Bash# `func` with the runner signature — so unlike the shell-function
+# and registered runners of 08-text-fences, this one LOWERS with the program
+# (`bashy transpile`). `build` compiles the fence into the fence's own
+# directory (never yours) with `bashy zig` ("$BASH" is this very bashy, so no
+# PATH is consulted) and `run` launches the artifact. Effects come from the
+# `methods` answer, so a read-only @guard denies `run` with 126.
+
+func builder(verb string, file string, args ...string) string {
+  out="${file%/*}/app"
+  case "$verb" in
+    methods) printf '%s\n' '{"name":"build","effects":["write","exec"]}' '{"name":"run","effects":["exec"]}' ;;
+    build)   "$BASH" zig build-exe "$file" -femit-bin="$out" >/dev/null && echo "$out" ;;
+    run)     "$out" "${args[@]}" ;;
+  esac
+}
+
+~~~zig as z !builder
+const std = @import("std");
+pub fn main() void {
+    std.debug.print("hello from zig, built by a fenced builder\n", .{});
+}
+~~~
+
+bin := z.build()
+echo "built ${bin##*/}"
+z.run()
+
+@guard("read")
+func peek() {
+  x := z.run()
+  echo "guarded run: status=$? (exec is not in the guard)"
+}
+peek()

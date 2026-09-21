@@ -1,0 +1,4 @@
+# rc=0
+configure -> 0
+build -> 0
+test -> 0 ([100%] Built target test)

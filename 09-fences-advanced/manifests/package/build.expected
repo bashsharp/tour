@@ -1,0 +1,3 @@
+# rc=0
+build -> 0 (node script in package)
+test -> 0 (tests ok)

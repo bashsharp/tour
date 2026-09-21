@@ -1,0 +1,18 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A script that carries its Cargo.toml. The manifest row's verbs are cargo's
+# (check, build, test, run — with their effects), run from this directory:
+# the sources beside this file (src/) are what the shadow project links,
+# and the manifest, the registry cache and target/ live under bashy's cache
+# — this directory stays byte-identical.
+cd "$(dirname "$0")"
+
+~~~cargo as rs
+[package]
+name = "fenced"
+version = "0.1.0"
+edition = "2021"
+~~~
+
+rs.check();                     echo "check -> $?"
+out := rs.run("from", "a fence")
+echo "run -> $? ($out)"

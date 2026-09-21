@@ -1,0 +1,19 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A script that carries its Makefile. `make -f <fence file>` runs in this
+# directory through bashy's in-process POSIX make (a GNU-only Makefile is
+# driven with `env make` instead). The verbs are build (the default target),
+# test, clean, and target(name) for any other.
+cd "$(dirname "$0")"
+
+~~~makefile as mk
+all:
+	@echo "make says hi in $$(basename "$$PWD")"
+test:
+	@echo "tests pass"
+greet:
+	@echo "greet target"
+~~~
+
+a := mk.build();      echo "build -> $? ($a)"
+t := mk.test();       echo "test -> $? ($t)"
+g := mk.target("greet"); echo "target -> $? ($g)"

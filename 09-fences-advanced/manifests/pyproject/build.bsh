@@ -1,0 +1,17 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A script that carries its pyproject.toml. `uv --project` takes the manifest
+# from the fence root and the code from this directory: the environment (a
+# uv-managed CPython and the dependency) is created under bashy's cache, and
+# nothing — no .venv, no lock — is written here.
+cd "$(dirname "$0")"
+
+~~~pyproject as py
+[project]
+name = "fenced"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = ["rich"]
+~~~
+
+out := py.run("python", "app.py")
+echo "run -> $? ($out)"

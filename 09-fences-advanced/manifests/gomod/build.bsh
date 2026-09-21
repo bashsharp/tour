@@ -1,0 +1,22 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A script that carries its go.mod — and a Go code fence beside it. The
+# manifest fence is the module (presented to `go` through an overlay, so no
+# go.mod is written here) and the code fence exposes functions; a script may
+# carry both. The type is `gomod`, never `go`: `~~~go` is the code fence.
+cd "$(dirname "$0")"
+
+~~~gomod as mod
+module example.com/fenced
+
+go 1.27
+~~~
+
+~~~go as gofn
+import "strings"
+func Shout(s string) string { return strings.ToUpper(s) + "!" }
+~~~
+
+mod.vet(".");            echo "vet -> $?"
+built := mod.run(".")
+loud := gofn.Shout("$built")
+echo "$loud"

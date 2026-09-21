@@ -1,0 +1,4 @@
+# rc=0
+build -> 0 (make says hi in makefile)
+test -> 0 (tests pass)
+target -> 0 (greet target)
