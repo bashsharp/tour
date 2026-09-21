@@ -87,9 +87,8 @@ time (a CI image, an air-gapped box) and is a no-op after that.
 | the Rust island | a rustup `stable` toolchain, linked through zig cc | MIT/Apache-2.0 |
 | the C and C++ islands | `zig cc` / `zig c++` — Clang with bundled libc headers, so no SDK to find | MIT |
 | the lowered build of `04-transpile` | the same Go, plus a checkout of `qiangli/sh` (`BASHSHARP_SH_ROOT`) | — |
-| `09-fences-advanced/tf.bsh` | OpenTofu (`bashy tofu`) | MPL-2.0 |
-| `09-fences-advanced/builder.bsh`, `manifests/cmake` | the same zig, plus CMake (`bashy cmake`) | MIT, BSD-3 |
-| `09-fences-advanced/manifests/*` | the same Go, uv/CPython, Node, cargo | as above |
+| `09-fences-advanced/builder.bsh` | the same zig (`bashy zig`) | MIT |
+| `09-fences-advanced/manifests/*` | the same Go, uv/CPython, Node | as above |
 | `09-fences-advanced/dockerfile.bsh`, `k8s.bsh` | podman (`bashy podman`, an upstream release) — **and a running machine**: `bashy podman machine start` on macOS/Windows | Apache-2.0 |
 
 To use a specific program instead, name it: `BASHPP_PYTHON`, `BASHPP_GO`,
@@ -108,14 +107,16 @@ If your shell refuses a command with an "unsupported locale" message, set
 Nothing is skipped for a missing tool — bashy provisions it — so on a
 machine that has never run an island the first gate is slower (the
 downloads) and every later one is not. `known-failing` is reserved for a
-case pinned to a card in `cases.tsv` — today two: `commands/register` and
-`text-fences/registered` on Windows only (a PATH entry under the profile
+case pinned to a card in `cases.tsv` — today: `commands/register` and
+`text-fences/registered` on Windows (a PATH entry under the profile
 directory is rewritten to a literal `$HOME`, so `bashy` is not found from
-inside the script; pre-existing, not an island), and the two container-engine
+inside the script; pre-existing, not an island); the two container-engine
 cases of `09-fences-advanced` on macOS and Windows (GitHub's runners there
 have no engine; with `bashy podman machine start` done on your own box they
-pass) — and an unexpected pass there fails the gate on purpose so a marker
-cannot rot.
+pass); and three manifest rows on Windows (a CR kept in a value, a
+re-spelled `TMP`, make recipes run through `/bin/sh` — one card each in
+`cases.tsv`) — and an unexpected pass there fails the gate on purpose so a
+marker cannot rot.
 
 ## Step by step
 
@@ -326,14 +327,15 @@ func rehearse() { x := cfg.apply(); echo "$?"; }   # 126 — apply declares writ
 → [`08-text-fences/`](08-text-fences/) — runs on the binary alone: a
 runner, a `~~~dag` pipeline, a `~~~skill`, a registered runner
 
-### 9 · Fences, advanced — the rod, IaC, engines, manifests
+### 9 · Fences, advanced — the rod, engines, manifests
 The same fence over what bashy provisions or an engine: a language bashy
 has no fence for, compiled by a toolchain it already has (Zig through an
-inline `func` runner — the one runner shape `transpile` accepts); an OpenTofu module whose `apply` is only ever rehearsed under
-a cap; a Dockerfile built and run, a manifest played, through podman; and a
-script that carries its own `Cargo.toml` / `pyproject.toml` / `go.mod` /
-`CMakeLists.txt` / `Makefile` / `package.json` and drives the toolchain from
-its directory without writing a byte into it.
+inline `func` runner — the one runner shape `transpile` accepts); a
+Dockerfile built and run, a manifest played, through podman; and a script
+that carries its own `pyproject.toml` / `go.mod` / `Makefile` /
+`package.json` and drives the toolchain from its directory without writing
+a byte into it. (`tf`, `cargo` and `cmake` rows exist in bashy; their cases
+wait on fixes the install matrix found — the chapter says which.)
 → [`09-fences-advanced/`](09-fences-advanced/) (the two engine cases need a
 running `bashy podman`; known-failing on the macOS/Windows CI legs, which
 have none)
@@ -408,7 +410,7 @@ it needs input from you.
 | `06-sharp/` | Sharp | `01-decorators`, `02-kwargs-defaults`, `03-enums`, `04-readonly`, `05-null-safety` |
 | `07-commands/` | your own commands | `register.bsh` (a registered command with a contract, in a scratch ring) |
 | `08-text-fences/` | Text fences (binary alone) | `runner`, `dag`, `skill`, `registered` + `words` |
-| `09-fences-advanced/` | Fences, advanced (provisioned tools, an engine) | `builder`, `tf`, `dockerfile`, `k8s`, `manifests/{cargo,pyproject,gomod,cmake,makefile,package}` |
+| `09-fences-advanced/` | Fences, advanced (provisioned tools, an engine) | `builder`, `dockerfile`, `k8s`, `manifests/{pyproject,gomod,makefile,package}` |
 | `check.sh` + `cases.tsv` | the gate | every file above, its mode, its needs, its exit status |
 | `SKILL.md` | the agent's tour | |
 

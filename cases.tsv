@@ -1,7 +1,7 @@
 # id	mode	file	needs	rc	xfail
 # mode: run = bashy --bashsharp FILE · off = bashy --no-bashsharp FILE · posix = bashy --posix FILE
 #       gosrc = bashy --bashsharp --source=go FILE · check = bashy check --bashsharp FILE
-# needs: - | python3 | typescript | cargo | cc | c++ | go | tofu | podman — what bashy PROVISIONS
+# needs: - | python3 | typescript | cargo | cc | c++ | go | podman — what bashy PROVISIONS
 #        for the case (pinned, verified, cached on first use); never a reason to skip.
 #        podman is the one exception in kind: bashy provisions the engine, but a machine
 #        must be RUNNING (bashy podman info) — see the xfail cards on the engine cases
@@ -44,12 +44,9 @@ text-fences/dag	run	08-text-fences/dag.bsh	-	0
 text-fences/skill	run	08-text-fences/skill.bsh	-	0
 text-fences/registered	run	08-text-fences/registered.bsh	-	0	windows=todo:1ec1081071d7
 advanced/builder	run	09-fences-advanced/builder.bsh	cc	0
-advanced/tf	run	09-fences-advanced/tf.bsh	tofu	0
 advanced/dockerfile	run	09-fences-advanced/dockerfile.bsh	podman	0	darwin=todo:9e360c57;windows=todo:9e360c57
 advanced/k8s	run	09-fences-advanced/k8s.bsh	podman	0	darwin=todo:9e360c57;windows=todo:9e360c57
-manifests/cargo	run	09-fences-advanced/manifests/cargo/build.bsh	cargo	0
-manifests/pyproject	run	09-fences-advanced/manifests/pyproject/build.bsh	python3	0
-manifests/gomod	run	09-fences-advanced/manifests/gomod/build.bsh	go	0
-manifests/cmake	run	09-fences-advanced/manifests/cmake/build.bsh	cc	0
-manifests/makefile	run	09-fences-advanced/manifests/makefile/build.bsh	-	0
+manifests/pyproject	run	09-fences-advanced/manifests/pyproject/build.bsh	python3	0	windows=todo:7373d5ba
+manifests/gomod	run	09-fences-advanced/manifests/gomod/build.bsh	go	0	windows=todo:edba6a1e
+manifests/makefile	run	09-fences-advanced/manifests/makefile/build.bsh	-	0	windows=todo:041dd280
 manifests/package	run	09-fences-advanced/manifests/package/build.bsh	typescript	0

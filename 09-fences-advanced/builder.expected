@@ -1,5 +1,5 @@
 # rc=0
-built app
+built fence.zig.exe
 hello from zig, built by a fenced builder
 z.run: declared effects exec exceed the guard (exec not allowed by read)
 guarded run: status=126 (exec is not in the guard)

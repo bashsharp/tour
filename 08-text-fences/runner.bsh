@@ -12,7 +12,7 @@ env-runner() {
   case "$1" in
     methods) printf '%s\n' '{"name":"show"}' '{"name":"apply","effects":["write"]}' ;;
     show)    grep -v '^#' "$2" | sort ;;
-    apply)   out="${2%/*}/rendered.env"; grep -v '^#' "$2" | sort > "$out"; echo "$out" ;;
+    apply)   out="${2%[/\\]*}/rendered.env"; grep -v '^#' "$2" | sort > "$out"; echo "$out" ;;
   esac
 }
 

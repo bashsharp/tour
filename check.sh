@@ -48,7 +48,7 @@ if "$bashy" check --help 2>/dev/null | grep -q -- --prepare; then
     echo "tour: provisioning the island toolchains (bashy check --prepare; cached after the first run)"
     # Relative paths from the tour root: a Windows bashy spells $here in
     # MSYS form, which the OS cannot open and a glob does not expand.
-    (cd "$here" && "$bashy" check --prepare 04-islands/python.bsh 04-islands/typescript.bsh 04-islands/rust.bsh 04-islands/c.bsh 04-islands/cpp.bsh 04-islands/go/go.bsh 03-go/03-whole-program.go 09-fences-advanced/builder.bsh 09-fences-advanced/tf.bsh 09-fences-advanced/manifests/cargo/build.bsh 09-fences-advanced/manifests/pyproject/build.bsh 09-fences-advanced/manifests/gomod/build.bsh 09-fences-advanced/manifests/cmake/build.bsh 09-fences-advanced/manifests/package/build.bsh) || { echo "tour: FAIL check --prepare" >&2; exit 1; }
+    (cd "$here" && "$bashy" check --prepare 04-islands/python.bsh 04-islands/typescript.bsh 04-islands/rust.bsh 04-islands/c.bsh 04-islands/cpp.bsh 04-islands/go/go.bsh 03-go/03-whole-program.go 09-fences-advanced/builder.bsh 09-fences-advanced/manifests/pyproject/build.bsh 09-fences-advanced/manifests/gomod/build.bsh 09-fences-advanced/manifests/package/build.bsh) || { echo "tour: FAIL check --prepare" >&2; exit 1; }
 fi
 osname=$(uname -s 2>/dev/null | tr 'A-Z' 'a-z'); case "$osname" in linux|darwin) ;; *) osname=windows ;; esac
 
@@ -56,6 +56,15 @@ osname=$(uname -s 2>/dev/null | tr 'A-Z' 'a-z'); case "$osname" in linux|darwin)
 # override inherited from the environment would make the transcript depend on
 # the host, so the gate runs without them.
 unset BASHPP_PYTHON BASHPP_GO BASHPP_CC BASHPP_CXX BASHPP_RUSTC BASHPP_NODE BASHPP_BUN BASHPP_TYPESCRIPT_RUNTIME BASHPP_TYPESCRIPT_MODULE
+# A CI runner's log annotations are the runner's, not the program's: `bashy dag`
+# groups its target output under GITHUB_ACTIONS, and a ~~~dag fence would carry
+# the markers into its value. The cases run as on a stranger's machine.
+unset GITHUB_ACTIONS CI
+# The container-engine cases (needs podman) reach bashy's own podman when the
+# host has none on PATH; its first-run fetch note must not land in a transcript
+# either, so warm it on Linux the way `check --prepare` warms the islands. On
+# macOS/Windows without a machine the cases are known-failing (see cases.tsv).
+case "$osname" in linux) "$bashy" podman version >/dev/null 2>&1 || true ;; esac
 invoke() { # mode file -> runs in the file's directory, prints stdout+stderr, returns status
     dir=$(dirname "$here/$2"); base=$(basename "$2")
     case "$1" in

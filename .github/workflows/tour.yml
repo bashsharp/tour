@@ -63,15 +63,24 @@ jobs:
           curl -fsSLO "$url"
           tar -xzf "${{ matrix.asset }}"
           ./bashy --version
+      # Ubuntu 24.04 confines an unpackaged rootless podman (bashy's own, on the
+      # stripped leg) to the unprivileged_userns AppArmor profile, which denies
+      # its re-exec; bashy prints this very sysctl as the host fact. The
+      # engine cases need it on this leg only.
+      - name: Allow unprivileged user namespaces (bashy's rootless podman)
+        if: runner.os == 'Linux'
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Tour gate
         if: runner.os != 'Windows'
         shell: bash
         run: |
           if [ "$LEG" = stripped ]; then
             # PATH = one directory of symlinks to the utilities check.sh itself
-            # runs. No python3, node, cargo, clang, cc or go can be found.
+            # runs, plus the two setuid shadow-utils a rootless container
+            # engine needs (system facts, not toolchains). No python3, node,
+            # cargo, clang, cc or go can be found.
             min=$RUNNER_TEMP/minpath; mkdir -p "$min"
-            for t in sh uname tr sed grep diff mktemp head printf cat dirname basename cmp rm mkdir sort env cut wc tail ls cp mv chmod touch true false test expr date tee xargs find; do
+            for t in sh uname tr sed grep diff mktemp head printf cat dirname basename cmp rm mkdir sort env cut wc tail ls cp mv chmod touch true false test expr date tee xargs find newuidmap newgidmap; do
               p=$(command -v "$t" 2>/dev/null) && ln -sf "$p" "$min/$t"
             done
             export PATH=$min

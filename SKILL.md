@@ -85,9 +85,8 @@ And the person sets the pace — you show, run, explain, and **wait**.
 | `08-text-fences/skill.bsh` | `bashy --bashsharp 08-text-fences/skill.bsh` | a SKILL.md as the one skill of a private ring: `verify` (valid, applicable), `probe`; `run` (exec) denied 126 under a read cap |
 | `08-text-fences/registered.bsh` | `bashy --bashsharp 08-text-fences/registered.bsh` | `words.bsh` names a runner (`!awk-runner`) that is REFUSED until registered as a command in a scratch ring (PATH is never consulted), then answers; xfail on Windows with `commands/register` |
 | `09-fences-advanced/builder.bsh` | `bashy --bashsharp 09-fences-advanced/builder.bsh` | the rod: Zig (no fence) compiled by `bashy zig` through an inline `func` runner — the shape that lowers; `run` denied 126 under a read cap |
-| `09-fences-advanced/tf.bsh` | `bashy --bashsharp 09-fences-advanced/tf.bsh` | OpenTofu as a fence (bashy provisions tofu): validate/init/plan pass, the plan shows `+ summary`; `apply` (net, write, spend) denied 126 under `read,net` — never run for real |
 | `09-fences-advanced/dockerfile.bsh`, `k8s.bsh` | `bashy --bashsharp 09-fences-advanced/dockerfile.bsh` | need a RUNNING engine (`bashy podman info`): build → an image id, run → one line; play/down a pod; `build` and `down` denied 126 under caps without their atoms; xfail on darwin/windows CI legs (no engine there) |
-| `09-fences-advanced/manifests/*/build.bsh` | `bashy --bashsharp 09-fences-advanced/manifests/cargo/build.bsh` etc. | a script carrying its Cargo.toml / pyproject.toml / go.mod / CMakeLists.txt / Makefile / package.json; the toolchain's verbs run from the case's directory and the directory stays byte-identical (`git status` clean) |
+| `09-fences-advanced/manifests/*/build.bsh` | `bashy --bashsharp 09-fences-advanced/manifests/pyproject/build.bsh` etc. | a script carrying its pyproject.toml / go.mod / Makefile / package.json; the toolchain's verbs run from the case's directory and the directory stays byte-identical (`git status` clean); three are xfail on Windows with a card each (`cases.tsv`) |
 
 The mode, needs and expected status of every file are in `cases.tsv`; that
 file is what `check.sh` reads.
@@ -116,12 +115,14 @@ file is what `check.sh` reads.
 
 A case may carry an `xfail` marker in `cases.tsv` naming an OS and a card:
 the gate prints `XFAIL` for it there. Tell the person it is a known, tracked
-limitation of the release, not of their machine, and move on. Two markers
+limitation of the release, not of their machine, and move on. Markers
 today: `commands/register` and `text-fences/registered` on Windows (bashy is
-not found on a PATH entry under the profile directory; not an island), and
-the two engine cases `advanced/dockerfile` and `advanced/k8s` on darwin and
+not found on a PATH entry under the profile directory; not an island); the
+two engine cases `advanced/dockerfile` and `advanced/k8s` on darwin and
 windows (GitHub's macOS/Windows runners have no container engine; on a
-machine with `bashy podman machine start` done they pass). Do not edit `cases.tsv` to make the count look better; an
+machine with `bashy podman machine start` done they pass); and
+`manifests/pyproject`, `manifests/gomod`, `manifests/makefile` on windows
+(three bashy-side cards named in `cases.tsv`). Do not edit `cases.tsv` to make the count look better; an
 unexpected PASS there fails the gate on purpose so the marker is removed
 with the fix. A fenced island that fails for a missing tool is a real
 failure now (bashy provisions the toolchains itself) — report it.

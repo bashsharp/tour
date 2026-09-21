@@ -1,13 +1,14 @@
 #!/usr/bin/env -S bashy --bashsharp
 # A script that carries its package.json. npm insists the manifest sit beside
 # node_modules, so the row keeps both under the fence root (`--prefix`) and
-# runs the scripts there; a script reaches this directory as $INIT_CWD, the
-# npm convention for "where the user was".
+# runs the scripts there; a script reaches this directory as INIT_CWD, the
+# npm convention for "where the user was" (read from the environment, since
+# on Windows npm runs scripts through cmd.exe, which does not expand $VAR).
 cd "$(dirname "$0")"
 
 ~~~package as npm
 { "name": "fenced", "version": "1.0.0", "private": true,
-  "scripts": { "build": "node $INIT_CWD/app.js", "test": "echo tests ok" } }
+  "scripts": { "build": "node -e \"require(process.env.INIT_CWD + '/app.js')\"", "test": "echo tests ok" } }
 ~~~
 
 b := npm.build();     echo "build -> $? ($b)"

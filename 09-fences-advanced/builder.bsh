@@ -10,12 +10,12 @@
 # `methods` answer, so a read-only @guard denies `run` with 126.
 
 func builder(verb string, file string, args ...string) string {
-  out := file[:len(file)-len("fence.zig")] + "app"
+  out := file + ".exe"   // beside the fence body, any OS: no path arithmetic, and Windows needs the suffix
   if verb == "methods" {
     printf '%s\n' '{"name":"build","effects":["write","exec"]}' '{"name":"run","effects":["exec"]}'
     return ""
   }
-  if verb == "build" { "$BASH" zig build-exe "$file" -femit-bin="$out" >/dev/null && echo "app"; return "" }
+  if verb == "build" { "$BASH" zig build-exe "$file" -femit-bin="$out" >/dev/null && echo "fence.zig.exe"; return "" }
   if verb == "run" { "$out" "${args[@]}"; return "" }
   return ""
 }
