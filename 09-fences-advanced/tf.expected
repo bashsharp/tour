@@ -1,0 +1,8 @@
+# rc=0
+validate -> 0
+init     -> 0
+plan     -> 0
+  + summary = "3 replicas in eu-west"
+iac.apply: declared effects net,write,spend exceed the guard (spend,write not allowed by net,read)
+apply under read,net -> 126 (write and spend are not in the guard)
+output   -> 0 (nothing was applied, so no state and no outputs)
