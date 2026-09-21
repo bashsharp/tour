@@ -54,8 +54,8 @@ exposes the verbs of its **processor**:
 `bashy transpile` turns a Bash# program into Go, and the rule is that **a
 transpiled binary never depends on a shell on the target**. So of the runner
 shapes above, only a Bash# `func` with the runner signature —
-`func NAME(verb string, file string, args ...string) string` — lowers with
-the program (`09-fences-advanced/builder.bsh` is one). A shell function
+`func NAME(verb string, file string, args ...string) string` — is accepted by
+`transpile` (`09-fences-advanced/builder.bsh` is one). A shell function
 (`runner.bsh`), a registered command (`registered.bsh`) and the `dag` /
 `skill` rows run in the interpreter, and `transpile` refuses them **by
 name, with the route**: declare the runner as a Bash# `func` and it lowers.

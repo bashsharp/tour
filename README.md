@@ -329,8 +329,7 @@ runner, a `~~~dag` pipeline, a `~~~skill`, a registered runner
 ### 9 · Fences, advanced — the rod, IaC, engines, manifests
 The same fence over what bashy provisions or an engine: a language bashy
 has no fence for, compiled by a toolchain it already has (Zig through an
-inline `func` runner — the one runner shape that also *lowers* with
-`transpile`); an OpenTofu module whose `apply` is only ever rehearsed under
+inline `func` runner — the one runner shape `transpile` accepts); an OpenTofu module whose `apply` is only ever rehearsed under
 a cap; a Dockerfile built and run, a manifest played, through podman; and a
 script that carries its own `Cargo.toml` / `pyproject.toml` / `go.mod` /
 `CMakeLists.txt` / `Makefile` / `package.json` and drives the toolchain from

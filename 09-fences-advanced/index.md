@@ -16,7 +16,7 @@ engine.
 
 | case | fence | needs | what it shows |
 |---|---|---|---|
-| `builder.bsh` | `~~~zig as z !builder` | cc | **the rod, compiler shape**: a language with no fence, compiled by a toolchain bashy already has (`bashy zig`, the C islands' compiler), through an inline Bash# `func` runner — the one runner shape that *lowers* with the program |
+| `builder.bsh` | `~~~zig as z !builder` | cc | **the rod, compiler shape**: a language with no fence, compiled by a toolchain bashy already has (`bashy zig`, the C islands' compiler), through an inline Bash# `func` runner — the one runner shape `bashy transpile` accepts |
 | `tf.bsh` | `~~~tf as iac` | tofu | infrastructure as a fence: `validate`, `init`, `plan` pass; `apply` (net, write, **spend**) is denied 126 under a `read,net` cap — it is only ever rehearsed |
 | `dockerfile.bsh` | `~~~dockerfile as img` | podman | `build` → an image id (net, write), `run` (exec); `build` denied under a read cap |
 | `k8s.bsh` | `~~~k8s as app` | podman | a manifest played locally (`play` / `down` through podman kube); `down` (destroy) denied under an exec cap; `apply` / `delete` / `get` / `diff` are the cluster verbs, `remote`, not exercised here |
@@ -59,9 +59,11 @@ reach its processor is a *recorded* failure, not a silent one.
 
 ## What lowers
 
-`builder.bsh` is the shape that survives `bashy transpile`: a Bash# `func`
-with the runner signature (`func NAME(verb string, file string, args
-...string) string`) is emitted as Go and called directly. The built-in rows
+`builder.bsh` is the shape `bashy transpile` accepts: a Bash# `func` with
+the runner signature (`func NAME(verb string, file string, args ...string)
+string`) is emitted as Go and called directly (the byte-identical
+interpreted/lowered parity proof is a test in the language repo; a lowered
+program carries no effect cap yet, so the 126 denial is the interpreter's). The built-in rows
 (`tf`, `dockerfile`, `k8s`, the manifests) lower with their body embedded;
 `dag` and `skill` and every other runner shape are interpreter-only and
 refused by name — see
