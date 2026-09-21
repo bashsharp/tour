@@ -1,0 +1,7 @@
+# rc=0
+verify: status=0
+valid: true
+applicable: true
+probe: status=0 (the coordinate itself differs per host, so it is not shown)
+s.run: declared effects exec exceed the guard (exec not allowed by read)
+run under a read cap: status=126 (exec is not in the guard)

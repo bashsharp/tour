@@ -1,0 +1,33 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A script that carries a skill. The fence is a SKILL.md (the format agents
+# read); the row makes it the one skill of a private ring rooted at the
+# fence, and the alias exposes the skill runner's verbs: `verify` (the dry
+# gate: structurally valid and applicable on this host), `probe` (this
+# host's coordinate) and `run` (execute + attest; effect `exec`). A prose-only
+# skill like this one is read by a model, not machine-run, so `run` is only
+# rehearsed here — under a read-only @guard it is denied (126) before the
+# runner is even asked.
+
+~~~skill as s
+---
+name: skill
+description: Greet whoever is reading, verifiably.
+---
+# skill
+
+Say hello. That is the whole procedure.
+~~~
+
+report := s.verify()
+echo "verify: status=$?"
+echo "$report" | grep -E '^(valid|applicable):'
+
+where := s.probe()
+echo "probe: status=$? (the coordinate itself differs per host, so it is not shown)"
+
+@guard("read")
+func rehearse() {
+  x := s.run()
+  echo "run under a read cap: status=$? (exec is not in the guard)"
+}
+rehearse()

@@ -34,3 +34,7 @@ sharp/enums	run	06-sharp/03-enums.bsh	-	0
 sharp/readonly	run	06-sharp/04-readonly.bsh	-	0
 sharp/null-safety	check	06-sharp/05-null-safety.bsh	-	2
 commands/register	run	07-commands/register.bsh	-	0	windows=todo:1ec1081071d7
+text-fences/runner	run	08-text-fences/runner.bsh	-	0
+text-fences/dag	run	08-text-fences/dag.bsh	-	0
+text-fences/skill	run	08-text-fences/skill.bsh	-	0
+text-fences/registered	run	08-text-fences/registered.bsh	-	0	windows=todo:1ec1081071d7

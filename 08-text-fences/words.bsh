@@ -1,0 +1,11 @@
+#!/usr/bin/env -S bashy --bashsharp
+# Names a registered runner and declares nothing else (see registered.bsh).
+~~~awk as aw !awk-runner
+{ words += NF }
+END { print words " words" }
+~~~
+
+ok := aw.check()
+echo "$ok"
+n := aw.run("$0")
+echo "this script has $n"

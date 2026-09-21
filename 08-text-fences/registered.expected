@@ -1,0 +1,7 @@
+# rc=0
+words.bsh: polyglot awk: runner awk-runner: methods: runner awk-runner is not a function, a builtin or a registered command (PATH is never consulted)
+before -> refused
+awk-runner (script: exec)
+awk: ok
+this script has 45 words
+after  -> 0

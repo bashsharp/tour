@@ -1,0 +1,6 @@
+# rc=0
+REGION=eu-west
+REPLICAS=3
+cfg.apply: declared effects write exceed the guard (write not allowed by read)
+rehearsal: status=126 (write is not in the guard)
+applied -> rendered.env
