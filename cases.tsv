@@ -46,7 +46,7 @@ text-fences/registered	run	08-text-fences/registered.bsh	-	0
 advanced/builder	run	09-fences-advanced/builder.bsh	cc	0
 advanced/dockerfile	run	09-fences-advanced/dockerfile.bsh	podman	0	windows=todo:9e360c57
 advanced/k8s	run	09-fences-advanced/k8s.bsh	podman	0	windows=todo:9e360c57
-manifests/pyproject	run	09-fences-advanced/manifests/pyproject/build.bsh	python3	0	windows=todo:7373d5ba
+manifests/pyproject	run	09-fences-advanced/manifests/pyproject/build.bsh	python3	0
 manifests/gomod	run	09-fences-advanced/manifests/gomod/build.bsh	go	0
 manifests/makefile	run	09-fences-advanced/manifests/makefile/build.bsh	-	0
-manifests/package	run	09-fences-advanced/manifests/package/build.bsh	typescript	0	windows=todo:7373d5ba
+manifests/package	run	09-fences-advanced/manifests/package/build.bsh	typescript	0

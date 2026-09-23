@@ -3,7 +3,7 @@ id: b93c0b653928
 kind: bug
 title: S250 Windows BashSharp Tour manifest line endings
 seq: 7
-status: todo
+status: doing
 priority: p1
 labels:
     - windows
