@@ -112,7 +112,9 @@ if [ "$pin" -eq 0 ]; then
     if [ -z "${BASHSHARP_SH_ROOT:-}" ] || [ ! -d "$BASHSHARP_SH_ROOT/lower/shellrt" ]; then
         echo "tour: SKIP go/transpile-lowered (set BASHSHARP_SH_ROOT to a github.com/qiangli/sh checkout: the lowered program imports its shellrt runtime)"; skip=$((skip+1))
     else
-        tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
+        # Go 1.27 ignores a go.mod below the Windows system Temp root.  Keep
+        # this per-run module in the writable Tour checkout instead.
+        tmp=$(mktemp -d "$here/.tour-go-build.XXXXXX"); trap 'rm -rf "$tmp"' EXIT
         printf 'module tour\n\ngo 1.27\n\nrequire mvdan.cc/sh/v3 v3.0.0\nreplace mvdan.cc/sh/v3 => %s\n' "$BASHSHARP_SH_ROOT" >"$tmp/go.mod"
         if (cd "$tmp" && GOFLAGS=-mod=mod "$bashy" transpile "$flag" "$here/03-go/04-transpile.bsh" -o "$tmp/t.go" >"$tmp/log" 2>&1 \
              && GOWORK=off GOFLAGS=-mod=mod "$bashy" go build -o program t.go >>"$tmp/log" 2>&1) \
