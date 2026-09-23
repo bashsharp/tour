@@ -3,7 +3,7 @@ id: df72ce1c1d16
 kind: bug
 title: S250 Windows BashSharp Tour container examples 40/40
 seq: 6
-status: todo
+status: doing
 priority: p1
 labels:
     - windows
