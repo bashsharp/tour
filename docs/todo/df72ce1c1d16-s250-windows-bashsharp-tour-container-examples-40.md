@@ -3,13 +3,12 @@ id: df72ce1c1d16
 kind: bug
 title: S250 Windows BashSharp Tour container examples 40/40
 seq: 6
-status: assigned
+status: todo
 priority: p1
 labels:
     - windows
     - tour
 created: 2026-09-23T16:20:25.106168Z
-weave: 6
 assignee: qiangli
 sprint: 250
 sprint_id: c912e608-edfe-59b8-bd36-a98f6dad1634
