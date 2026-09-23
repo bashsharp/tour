@@ -114,14 +114,14 @@ if [ "$pin" -eq 0 ]; then
     else
         # Go 1.27 ignores a go.mod below the Windows system Temp root.  Keep
         # this per-run module in the writable Tour checkout instead.
-        tmp=$(mktemp -d "$here/.tour-go-build.XXXXXX"); trap 'rm -rf "$tmp"' EXIT
-        printf 'module tour\n\ngo 1.27\n\nrequire mvdan.cc/sh/v3 v3.0.0\nreplace mvdan.cc/sh/v3 => %s\n' "$BASHSHARP_SH_ROOT" >"$tmp/go.mod"
-        if (cd "$tmp" && GOFLAGS=-mod=mod "$bashy" transpile "$flag" "$here/03-go/04-transpile.bsh" -o "$tmp/t.go" >"$tmp/log" 2>&1 \
-             && GOWORK=off GOFLAGS=-mod=mod "$bashy" go build -o program t.go >>"$tmp/log" 2>&1) \
-           && out=$("$tmp/program" 2>&1) && [ "$out" = "$(sed 1d "$here/03-go/04-transpile.expected")" ]; then
+        build_dir=$(mktemp -d "$here/.tour-go-build.XXXXXX"); trap 'rm -rf "$build_dir"' EXIT
+        printf 'module tour\n\ngo 1.27\n\nrequire mvdan.cc/sh/v3 v3.0.0\nreplace mvdan.cc/sh/v3 => %s\n' "$BASHSHARP_SH_ROOT" >"$build_dir/go.mod"
+        if (cd "$build_dir" && GOFLAGS=-mod=mod "$bashy" transpile "$flag" "$here/03-go/04-transpile.bsh" -o "$build_dir/t.go" >"$build_dir/log" 2>&1 \
+             && GOWORK=off GOFLAGS=-mod=mod "$bashy" go build -o program t.go >>"$build_dir/log" 2>&1) \
+           && out=$("$build_dir/program" 2>&1) && [ "$out" = "$(sed 1d "$here/03-go/04-transpile.expected")" ]; then
             echo "tour: PASS go/transpile-lowered (built as Go, same transcript)"; pass=$((pass+1))
         else
-            echo "tour: FAIL go/transpile-lowered" >&2; cat "$tmp/log" >&2; printf '%s\n' "${out-}" >&2; fail=$((fail+1)); rc=1
+            echo "tour: FAIL go/transpile-lowered" >&2; cat "$build_dir/log" >&2; printf '%s\n' "${out-}" >&2; fail=$((fail+1)); rc=1
         fi
     fi
 fi
