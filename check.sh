@@ -30,7 +30,14 @@ case "$bashy" in
 esac
 # `bashy` inside a case means the binary under test, wherever it sits (a
 # Windows path spells its directories with backslashes).
-case "$bashy" in */*|*\\*) PATH=$(dirname "$bashy"):$PATH; export PATH ;; esac
+# On Windows bashy keeps PATH in the native ';'-separated spelling, and a
+# list with a ';' is split on ';' only — a ':' prepend would glue this
+# directory onto the first entry and lose both, so join with the list's own
+# separator.
+case "$bashy" in */*|*\\*)
+    bdir=$(dirname "$bashy"); [ "$bdir" = . ] && case "$bashy" in *\\*) bdir=${bashy%\\*} ;; esac
+    case "$PATH" in *\;*) PATH="$bdir;$PATH" ;; *) PATH="$bdir:$PATH" ;; esac; export PATH ;;
+esac
 flag=${BASHSHARP_FLAG:-}
 if [ -z "$flag" ]; then
     # A binary from before the rename knows the old spelling only.
@@ -59,6 +66,8 @@ unset BASHPP_PYTHON BASHPP_GO BASHPP_CC BASHPP_CXX BASHPP_RUSTC BASHPP_NODE BASH
 # A CI runner's log annotations are the runner's, not the program's: `bashy dag`
 # groups its target output under GITHUB_ACTIONS, and a ~~~dag fence would carry
 # the markers into its value. The cases run as on a stranger's machine.
+# Remembered first: a `ci:OS=card` xfail marker (cases.tsv) applies on CI only.
+on_ci=${GITHUB_ACTIONS:-}
 unset GITHUB_ACTIONS CI
 # The container-engine cases (needs podman) reach bashy's own podman when the
 # host has none on PATH; its first-run fetch note must not land in a transcript
@@ -77,7 +86,7 @@ invoke() { # mode file -> runs in the file's directory, prints stdout+stderr, re
 }
 report() { # id expected-file actual-text actual-rc expected-rc xfail-spec
     want=$(sed 1d "$2")
-    xf=""; for spec in $(printf '%s' "${6:-}" | tr ';' ' '); do case "$spec" in "$osname="*) xf=${spec#*=} ;; esac; done
+    xf=""; for spec in $(printf '%s' "${6:-}" | tr ';' ' '); do case "$spec" in "$osname="*) xf=${spec#*=} ;; "ci:$osname="*) [ -n "$on_ci" ] && xf=${spec#*=} ;; esac; done
     if [ "$3" = "$want" ] && [ "$4" -eq "$5" ]; then
         if [ -n "$xf" ]; then
             echo "tour: XPASS $1 — marked xfail on $osname ($xf) but PASSED: remove the marker" >&2

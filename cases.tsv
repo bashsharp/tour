@@ -7,10 +7,11 @@
 #        must be RUNNING (bashy podman info) — see the xfail cards on the engine cases
 # rc: the exit status the transcript is pinned with
 # xfail: OS on which the case is a KNOWN failure with its card, one `os=card` per OS, ';'-separated
-#        (windows=todo:1ec1081071d7 — commands/register, text-fences/registered: a PATH entry under the profile
-#        dir is rewritten to a literal $HOME, pre-existing; darwin/windows=todo:9e360c57 — the engine cases:
-#        GitHub's macOS/Windows runners run no container engine); an unexpected pass there fails the gate
-#        so a marker is removed when the fix lands
+#        A `ci:os=card` marker applies only when the gate runs under GitHub Actions — an environment
+#        limit of the hosted runner, not of the release (ci:darwin/ci:windows=todo:9e360c57 — the engine
+#        cases: GitHub's macOS/Windows runners run no container engine; with a podman machine running on
+#        your own box they pass). An unexpected pass where a marker applies fails the gate so a marker is
+#        removed when the fix lands
 quickstart/judge	run	00-quickstart/judge.bsh	-	0
 bash/on	run	01-bash/bash-is-bash.bsh	-	0
 bash/off	off	01-bash/bash-is-bash.bsh	-	0
@@ -44,8 +45,8 @@ text-fences/dag	run	08-text-fences/dag.bsh	-	0
 text-fences/skill	run	08-text-fences/skill.bsh	-	0
 text-fences/registered	run	08-text-fences/registered.bsh	-	0
 advanced/builder	run	09-fences-advanced/builder.bsh	cc	0
-advanced/dockerfile	run	09-fences-advanced/dockerfile.bsh	podman	0
-advanced/k8s	run	09-fences-advanced/k8s.bsh	podman	0
+advanced/dockerfile	run	09-fences-advanced/dockerfile.bsh	podman	0	ci:darwin=todo:9e360c57;ci:windows=todo:9e360c57
+advanced/k8s	run	09-fences-advanced/k8s.bsh	podman	0	ci:darwin=todo:9e360c57;ci:windows=todo:9e360c57
 manifests/pyproject	run	09-fences-advanced/manifests/pyproject/build.bsh	python3	0
 manifests/gomod	run	09-fences-advanced/manifests/gomod/build.bsh	go	0
 manifests/makefile	run	09-fences-advanced/manifests/makefile/build.bsh	-	0
