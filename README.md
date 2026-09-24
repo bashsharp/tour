@@ -107,16 +107,12 @@ If your shell refuses a command with an "unsupported locale" message, set
 Nothing is skipped for a missing tool — bashy provisions it — so on a
 machine that has never run an island the first gate is slower (the
 downloads) and every later one is not. `known-failing` is reserved for a
-case pinned to a card in `cases.tsv` — today: `commands/register` and
-`text-fences/registered` on Windows (a PATH entry under the profile
-directory is rewritten to a literal `$HOME`, so `bashy` is not found from
-inside the script; pre-existing, not an island); the two container-engine
-cases of `09-fences-advanced` on macOS and Windows (GitHub's runners there
-have no engine; with `bashy podman machine start` done on your own box they
-pass); and four manifest rows on Windows (a CR kept in a value — two rows —,
-a re-spelled `TMP`, make recipes run through `/bin/sh`; the cards are in
-`cases.tsv`) — and an unexpected pass there fails the gate on purpose so a
-marker cannot rot.
+case pinned to a card in `cases.tsv` — today only the two container-engine
+cases of `09-fences-advanced` on the macOS and Windows CI legs (a `ci:`
+marker: GitHub's runners there have no engine; on your own box with
+`bashy podman machine start` done they pass and the marker does not apply)
+— and an unexpected pass where a marker applies fails the gate on purpose
+so a marker cannot rot.
 
 ## Step by step
 

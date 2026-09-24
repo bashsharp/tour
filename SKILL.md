@@ -116,13 +116,10 @@ file is what `check.sh` reads.
 A case may carry an `xfail` marker in `cases.tsv` naming an OS and a card:
 the gate prints `XFAIL` for it there. Tell the person it is a known, tracked
 limitation of the release, not of their machine, and move on. Markers
-today: `commands/register` and `text-fences/registered` on Windows (bashy is
-not found on a PATH entry under the profile directory; not an island); the
-two engine cases `advanced/dockerfile` and `advanced/k8s` on darwin and
-windows (GitHub's macOS/Windows runners have no container engine; on a
-machine with `bashy podman machine start` done they pass); and
-`manifests/pyproject`, `manifests/package`, `manifests/gomod`,
-`manifests/makefile` on windows (bashy-side cards named in `cases.tsv`). Do not edit `cases.tsv` to make the count look better; an
+today: the two engine cases `advanced/dockerfile` and `advanced/k8s`, on the
+darwin and windows CI legs only (a `ci:` marker — GitHub's macOS/Windows
+runners have no container engine; on a machine with
+`bashy podman machine start` done they pass). Do not edit `cases.tsv` to make the count look better; an
 unexpected PASS there fails the gate on purpose so the marker is removed
 with the fix. A fenced island that fails for a missing tool is a real
 failure now (bashy provisions the toolchains itself) — report it.

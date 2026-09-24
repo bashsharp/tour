@@ -35,11 +35,6 @@ shared runners. The tour never marks a case that fails *by which machine
 it runs on* as known-failing, so the three wait for the fixes in bashy
 (cards `4995ee3e`, `18f7a7aa`, `dd498d73`).
 
-Four manifest cases are known-failing on Windows: the `pyproject` and
-`package` rows keep the program's CR in their value (`7373d5ba`), the
-`gomod` row's `go` is handed a re-spelled `TMP` (`edba6a1e`), and the
-`makefile` row's make runs its recipes through `/bin/sh` (`041dd280`).
-
 ## Manifest fences
 
 A script carries its project manifest inline and drives the toolchain's
@@ -63,8 +58,8 @@ The type names the *manifest*, never the language: `~~~gomod` is a module,
 
 `dockerfile.bsh` and `k8s.bsh` need a running engine (`bashy podman info`).
 GitHub's Linux runner has one; its macOS and Windows runners do not, so
-`cases.tsv` marks the two cases **known-failing on darwin and windows** with
-one card, their transcripts are pinned from Linux, and an unexpected pass
+`cases.tsv` marks the two cases **known-failing on the darwin and windows CI
+legs** (`ci:` markers, applied under GitHub Actions only) with one card, their transcripts are pinned from Linux, and an unexpected pass
 on those legs fails the gate so the marker cannot rot. On your own Mac or
 Windows box with `bashy podman machine start` done, both cases pass with
 the same transcript. `needs` is never a reason to skip; a case that cannot
