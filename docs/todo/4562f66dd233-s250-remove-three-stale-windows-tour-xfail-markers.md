@@ -6,7 +6,6 @@ seq: 1
 status: done
 priority: p1
 created: 2026-09-23T09:43:52.745864Z
-weave: 1
 assignee: qiangli
 sprint: 250
 sprint_id: c912e608-edfe-59b8-bd36-a98f6dad1634

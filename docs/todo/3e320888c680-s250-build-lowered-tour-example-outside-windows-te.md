@@ -8,7 +8,6 @@ priority: p0
 labels:
     - windows
 created: 2026-09-23T10:12:45.265248Z
-weave: 3
 assignee: qiangli
 sprint: 250
 sprint_id: c912e608-edfe-59b8-bd36-a98f6dad1634
