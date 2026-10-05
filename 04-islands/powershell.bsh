@@ -1,0 +1,31 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A PowerShell island: `function` definitions become callables. bashy
+# provisions the pinned PowerShell 7 runtime on first use, so no pwsh needs
+# to be installed. Typed parameters cross as values; a function with no
+# declared return type is dynamic, so its call binds (value, err). An
+# exported function is also a command word: one with a `process` block reads
+# stdin and works in pipes. (Do not write a tilde fence inside a comment —
+# the scanner would take it for a real one.)
+
+~~~powershell as ps
+function Shout([string]$s) {
+  return $s.ToUpper() + "!"
+}
+function Add([long]$a, [long]$b) {
+  return $a + $b
+}
+function Upper {
+  process { $_.ToUpper() }
+}
+function Fail([string]$why) {
+  throw "nope: $why"
+}
+~~~
+
+s, serr := ps.Shout("islands")
+echo "$s"
+x, xerr := ps.Add(20, 22)
+echo "x=$x"
+printf 'gamma\nalpha\n' | ps.Upper | sort
+v, err := ps.Fail("demo")
+echo "fail err=$err"

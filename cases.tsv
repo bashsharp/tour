@@ -27,6 +27,8 @@ islands/rust	run	04-islands/rust.bsh	cargo	0
 islands/c	run	04-islands/c.bsh	cc	0
 islands/cpp	run	04-islands/cpp.bsh	c++	0
 islands/go	run	04-islands/go/go.bsh	go	0
+islands/powershell	run	04-islands/powershell.bsh	pwsh	0
+islands/csharp	run	04-islands/csharp.bsh	pwsh	0
 islands/bash	run	04-islands/bash.bsh	-	0
 islands/sh	run	04-islands/sh.bsh	-	0
 agentic/scope	run	05-agentic/01-scope.bsh	-	0
@@ -51,3 +53,4 @@ manifests/pyproject	run	09-fences-advanced/manifests/pyproject/build.bsh	python3
 manifests/gomod	run	09-fences-advanced/manifests/gomod/build.bsh	go	0
 manifests/makefile	run	09-fences-advanced/manifests/makefile/build.bsh	-	0
 manifests/package	run	09-fences-advanced/manifests/package/build.bsh	typescript	0
+windows/guide	run	10-windows/workflow.bsh	pwsh	0

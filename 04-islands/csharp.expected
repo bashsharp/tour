@@ -1,0 +1,4 @@
+# rc=0
+sq=36
+ISLANDS!
+fail err=InvalidOperationException: demo

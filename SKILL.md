@@ -2,8 +2,9 @@
 name: bashsharp-tour
 description: >-
   Walk a person through the Bash# language tour on their installed bashy —
-  27 small programs in six chapters (bash-is-bash, POSIX, Go mixed, fenced
-  islands, agentic + contracts, the Sharp ergonomics tier), each with a
+  30 small programs in seven chapters (bash-is-bash, POSIX, Go mixed, fenced
+  islands, agentic + contracts, the Sharp ergonomics tier, the Windows-user
+  guide), each with a
   pinned transcript, and one gate (check.sh) that proves every one on the
   binary in front of you. Use when asked to learn, teach, demonstrate or
   verify Bash#, and keep it loaded whenever you write Bash# afterwards: the
@@ -53,7 +54,8 @@ And the person sets the pace — you show, run, explain, and **wait**.
 - **Match the person's level.** New to programming: chapters 00, 01, 02, 05
   are the story; skip 03/04/06 unless asked. Knows bash: dwell on 01, 02, 06
   and the "with the dialect off" run. Knows Go: dwell on 03 and the
-  `--source=go` whole program, then 05.
+  `--source=go` whole program, then 05. Knows PowerShell or C#: start at
+  `10-windows` (the guide meets them where they are), then 04-islands.
 - **End with the report** (below), whether or not you finished.
 
 ## The chapters, in order
@@ -68,7 +70,8 @@ And the person sets the pace — you show, run, explain, and **wait**.
 | `03-go/02-funcs.bsh` | `bashy --bashsharp …` | `if`/`switch`/`for`/`return` inside a func body (top-level Go `if {` in shell text is planned, not shipped) |
 | `03-go/03-whole-program.go` | `bashy --bashsharp --source=go 03-go/03-whole-program.go` | a whole Go 1.27 program with generics; where the corpus numbers are measured |
 | `03-go/04-transpile.bsh` | run it; then `bashy transpile --bashsharp 03-go/04-transpile.bsh -o /tmp/t.go` and `cat /tmp/t.go` | ordinary Go comes out; building it needs go ≥ 1.27 and the engine's `shellrt` (see README) |
-| `04-islands/*.bsh` (`go/go.bsh` sits next to its `go.mod`) | `bashy --bashsharp 04-islands/python.bsh` etc. | a fenced block becomes callables; bashy provisions each language's toolchain itself (pinned, verified, cached — never the person's `PATH`), so the first island run downloads once; `bashy check --prepare 04-islands/*.bsh` does that ahead of time |
+| `04-islands/*.bsh` (`go/go.bsh` sits next to its `go.mod`) | `bashy --bashsharp 04-islands/python.bsh` etc. | a fenced block becomes callables; bashy provisions each language's toolchain itself (pinned, verified, cached — never the person's `PATH`), so the first island run downloads once; `bashy check --prepare 04-islands/*.bsh` does that ahead of time; `powershell.bsh` and `csharp.bsh` share one pinned PowerShell 7 runtime (never 5.1) |
+| `10-windows/workflow.bsh` (+ `guide.md`) | `bashy --bashsharp 10-windows/workflow.bsh` | the Bash#-first guide for Windows users: one portable workflow — Bash# control flow, a pipe and an `@ensure` contract — calling both new islands; same bytes on all three OSes |
 | `05-agentic/01-scope.bsh` | `bashy --bashsharp …` | calling an agentic action OUTSIDE an `agentic { }` scope is refused (exit 1); inside, it runs |
 | `05-agentic/02-forms.bsh` | `bashy --bashsharp …` | the spellings: `agentic function`, typed `agentic func`, a typed method, the `agentic { }` scope |
 | `05-agentic/03-contracts.bsh` | `bashy --bashsharp …` | `@require` before (fail → 3, body never runs), `@ensure` after (fail → 3), `$RESULT`, checks don't leak |

@@ -1,0 +1,6 @@
+# rc=0
+ISLANDS!
+x=42
+ALPHA
+GAMMA
+fail err=RuntimeException: nope: demo

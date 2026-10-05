@@ -21,7 +21,7 @@ a pure-Go Bash 5.3 that runs on Linux, macOS and Windows.
 > one of them — [open an issue](https://github.com/bashsharp/tour/issues)
 > with the output of `./check.sh`.
 
-This repo is a set of small, complete programs — one directory per idea (nine, counting the bashy command ring and the two fences chapters) —
+This repo is a set of small, complete programs — one directory per idea (ten, counting the bashy command ring, the two fences chapters and the Windows-user guide) —
 each with a **pinned transcript** next to it, and one script, `./check.sh`,
 that runs them all against the `bashy` on your `PATH` and diffs. If you
 learn best by reading, start at [§ The six ideas](#the-six-ideas). If you
@@ -86,6 +86,7 @@ time (a CI image, an air-gapped box) and is a no-op after that.
 | the TypeScript island | Node 22 + `typescript@5.9.3` (a project-local `typescript` wins) | MIT, Apache-2.0 |
 | the Rust island | a rustup `stable` toolchain, linked through zig cc | MIT/Apache-2.0 |
 | the C and C++ islands | `zig cc` / `zig c++` — Clang with bundled libc headers, so no SDK to find | MIT |
+| the PowerShell and C# islands, `10-windows/workflow.bsh` | PowerShell 7.6.6 — one pinned archive per platform, digest-verified on first use (C# compiles through `Add-Type` inside it, no SDK) | MIT (per-archive inventory in the bashy repo's `docs/fence-toolchain-licenses.md`; the Windows archives add closed Microsoft natives the common notice does not rule on) |
 | the lowered build of `04-transpile` | the same Go, plus a checkout of `qiangli/sh` (`BASHSHARP_SH_ROOT`) | — |
 | `09-fences-advanced/builder.bsh` | the same zig (`bashy zig`) | MIT |
 | `09-fences-advanced/manifests/*` | the same Go, uv/CPython, Node | as above |
@@ -93,7 +94,7 @@ time (a CI image, an air-gapped box) and is a no-op after that.
 
 To use a specific program instead, name it: `BASHPP_PYTHON`, `BASHPP_GO`,
 `BASHPP_CC`/`BASHPP_CXX`, `BASHPP_RUSTC`, `BASHPP_NODE`,
-`BASHPP_TYPESCRIPT_MODULE`. That is the one escape, per tool, and the run's
+`BASHPP_TYPESCRIPT_MODULE`, `BASHPP_PWSH`. That is the one escape, per tool, and the run's
 plan records it.
 
 If your shell refuses a command with an "unsupported locale" message, set
@@ -234,9 +235,11 @@ bashy transpile --bashsharp 03-go/04-transpile.bsh -o t.go
 → [`03-go/`](03-go/)
 
 ### 4 · Polyglot — fenced islands
-A tilde-fenced block in Python, TypeScript, Rust, C, C++, Go, bash or sh is an
-*island*: its functions are ordinary callables from shell text, typed values
-cross the boundary, and it runs on the compiler you already have.
+A tilde-fenced block in Python, TypeScript, Rust, C, C++, Go, PowerShell,
+C#, bash or sh is an *island*: its functions are ordinary callables from
+shell text, typed values cross the boundary, and bashy provisions the
+pinned toolchain on first use — nothing needs to be installed, on Windows
+either.
 ```
 ~~~py as py
 def shout(s: str) -> str:
@@ -245,7 +248,10 @@ def shout(s: str) -> str:
 s := py.shout("islands")
 echo "$s"
 ```
-→ [`04-islands/`](04-islands/) — one file per language.
+→ [`04-islands/`](04-islands/) — one file per language. Windows users:
+[`10-windows/`](10-windows/) is the Bash#-first guide — one portable
+workflow that calls the PowerShell and C# islands from clean-machine
+install to the same result on all three OSes.
 
 ### 5 · Agentic — the reserved word
 `agentic` is the language's `unsafe`: an `agentic` body is the one place a
@@ -401,7 +407,8 @@ it needs input from you.
 | `01-bash/` | Base | `bash-is-bash.bsh` (run on and off) |
 | `02-posix/` | Standard | `posix-script.sh`, `dialect-is-inert.bsh` |
 | `03-go/` | Typed core | `01-values`, `02-funcs`, `03-whole-program.go`, `04-transpile` |
-| `04-islands/` | Polyglot | `python`, `typescript`, `rust`, `c`, `cpp`, `go/`, `bash`, `sh` |
+| `04-islands/` | Polyglot | `python`, `typescript`, `rust`, `c`, `cpp`, `go/`, `powershell`, `csharp`, `bash`, `sh` |
+| `10-windows/` | Bash# first for Windows users | `guide.md`, `workflow.bsh` (one portable workflow over both new islands) |
 | `05-agentic/` | Agentic | `01-scope`, `02-forms`, `03-contracts`, `04-judge`, `05-yield` |
 | `06-sharp/` | Sharp | `01-decorators`, `02-kwargs-defaults`, `03-enums`, `04-readonly`, `05-null-safety` |
 | `07-commands/` | your own commands | `register.bsh` (a registered command with a contract, in a scratch ring) |

@@ -1,0 +1,22 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A C# island: `public static` methods become callables. The fence compiles
+# through Add-Type inside bashy's pinned PowerShell 7 runtime, so no .NET
+# SDK needs to be installed. Leading `using` lines carry into the generated
+# unit; anything that is not a `public static` member stays private to the
+# fence. An uncaught exception is the call's error. (Do not write a tilde
+# fence inside a comment — the scanner would take it for a real one.)
+
+~~~csharp as cs
+using System;
+
+public static long Square(long x) => x * x;
+public static string Shout(string s) => s.ToUpper() + "!";
+public static string Fail(string why) => throw new InvalidOperationException(why);
+~~~
+
+sq := cs.Square(6)
+echo "sq=$sq"
+s := cs.Shout("islands")
+echo "$s"
+v, err := cs.Fail("demo")
+echo "fail err=$err"
