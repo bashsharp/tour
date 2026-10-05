@@ -17,9 +17,11 @@ layer.
 
 On a Windows machine with no PowerShell 7 and no .NET installed:
 
-1. Install one static binary, `bashy`, from the
-   [bashy releases](https://github.com/qiangli/bashy/releases/latest) —
-   nothing else. No SDK, no toolchain setup.
+1. Copy a Sprint 358-capable `bashy` binary to the machine (the build must
+   include `bashy` commit `536e8256f` or later and the Sprint 358 `sh`
+   pin). No PowerShell 7, .NET SDK or guest toolchain setup is needed.
+   The current `v0.31.0` release predates these fences; use a verified
+   Sprint 358 build until a milestone release includes them.
 2. Save [`workflow.bsh`](workflow.bsh) beside this guide.
 3. Run it:
    ```sh
@@ -29,7 +31,7 @@ On a Windows machine with no PowerShell 7 and no .NET installed:
    pinned PowerShell 7.6.6 archive for your platform, verifies its digest
    against the pin in its own source, and caches it under your user cache
    directory. A toolchain you happen to have installed is never consulted.
-   Pay that download once with `bashy check --prepare 10-windows/workflow.bsh`
+   Pay that download once with `bashy check --prepare workflow.bsh`
    (a no-op afterwards, and the way to warm a CI image or an air-gapped box).
 
 Expected output — byte for byte, on every OS:
