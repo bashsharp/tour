@@ -1,8 +1,8 @@
 #!/usr/bin/env -S bashy --bashsharp
 # Bash# first: this program owns the control flow, the pipe and the
 # contract. PowerShell shapes text the Windows way; C# computes with a .NET
-# library. Neither is installed on this machine: bashy provisions its pinned
-# PowerShell 7 runtime on first use. The same file runs unchanged on
+# library. A system .NET installation may coexist: bashy provisions its pinned
+# PowerShell 7 guest runtime on first use. The same file runs unchanged on
 # Windows, Linux and macOS. (Do not write a tilde fence inside a comment —
 # the scanner would take it for a real one.)
 
