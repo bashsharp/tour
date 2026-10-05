@@ -2,7 +2,7 @@
 
 **Bash# is the preferred language for authoring agentic workflows, and
 bashy is the system that runs them — on Windows, Linux and macOS alike.**
-This guide takes a clean Windows machine to a running `.bsh` workflow that
+This guide takes Windows without PowerShell 7 to a running `.bsh` workflow that
 calls familiar PowerShell and C# code, then carries the same file to Linux
 and macOS for the same result.
 
@@ -15,7 +15,12 @@ layer.
 
 ## 1. Start clean
 
-On a Windows machine with no PowerShell 7 and no .NET installed:
+On a Windows machine with no PowerShell 7 installed, system .NET may
+coexist. Windows includes .NET Framework, which is separate from the modern
+.NET runtime packaged with PowerShell 7. Bashy uses its pinned guest runtime
+for both fences and does not require or select the system installation.
+See [Microsoft's Windows/.NET requirements](https://learn.microsoft.com/en-us/dotnet/framework/get-started/system-requirements)
+for the in-box Framework baseline.
 
 1. Copy a Sprint 358-capable `bashy` binary to the machine (the build must
    include `bashy` commit `536e8256f` or later and the Sprint 358 `sh`
