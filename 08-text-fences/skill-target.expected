@@ -1,0 +1,9 @@
+# rc=0
+==> send
+sent a greeting
+dag: 1 target(s) ok
+send: skill: skill
+target: send
+ok: true
+s.send: declared effects read,net exceed the guard (net not allowed by read)
+rehearsal: status=126 (a read-only guard denies a net target)

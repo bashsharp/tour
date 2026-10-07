@@ -1,0 +1,29 @@
+#!/usr/bin/env -S bashy --bashsharp
+# A skill that also carries a tasks.md (bundled beside this script): the
+# alias answers `methods` from the skill's own three verbs (`verify`,
+# `probe`, `run`) PLUS one method per tasks.md target — `send()` here, from
+# the `### send` heading's own `Effects:` line. Each is `bashy skill run
+# skill --target <name>` under the hood, so calling `s.send()` and running
+# `bashy skill run skill --target send` by hand agree on stdout and status.
+# A skill with no tasks.md keeps only the three verbs — see skill.bsh.
+
+~~~skill as s
+---
+name: skill
+description: Greet whoever is reading, verifiably.
+---
+# skill
+
+Say hello. That is the whole procedure. Its tasks.md carries one step,
+`send`, that this script calls as a method.
+~~~
+
+out := s.send()
+echo "send: $out"
+
+@guard("read")
+func rehearse() {
+  x := s.send()
+  echo "rehearsal: status=$? (a read-only guard denies a net target)"
+}
+rehearse()

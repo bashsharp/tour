@@ -45,6 +45,7 @@ commands/register	run	07-commands/register.bsh	-	0
 text-fences/runner	run	08-text-fences/runner.bsh	-	0
 text-fences/dag	run	08-text-fences/dag.bsh	-	0
 text-fences/skill	run	08-text-fences/skill.bsh	-	0
+text-fences/skill-target	run	08-text-fences/skill-target.bsh	-	0
 text-fences/registered	run	08-text-fences/registered.bsh	-	0
 advanced/builder	run	09-fences-advanced/builder.bsh	cc	0
 advanced/dockerfile	run	09-fences-advanced/dockerfile.bsh	podman	0	ci:darwin=todo:9e360c57;ci:windows=todo:9e360c57
