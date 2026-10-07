@@ -6,7 +6,11 @@
 # host's coordinate) and `run` (execute + attest; effect `exec`). A prose-only
 # skill like this one is read by a model, not machine-run, so `run` is only
 # rehearsed here — under a read-only @guard it is denied (126) before the
-# runner is even asked.
+# runner is even asked. This SKILL.md carries no `metadata.tasks:` pointer,
+# so it stays at exactly these three verbs even though skill-target.bsh's
+# tasks.md sits in this same directory — a skill's tasks face is only ever
+# what it names itself, never whatever same-named file the caller's
+# directory happens to carry.
 
 ~~~skill as s
 ---

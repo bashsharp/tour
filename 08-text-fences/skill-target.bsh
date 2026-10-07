@@ -1,16 +1,23 @@
 #!/usr/bin/env -S bashy --bashsharp
-# A skill that also carries a tasks.md (bundled beside this script): the
-# alias answers `methods` from the skill's own three verbs (`verify`,
-# `probe`, `run`) PLUS one method per tasks.md target — `send()` here, from
-# the `### send` heading's own `Effects:` line. Each is `bashy skill run
-# skill --target <name>` under the hood, so calling `s.send()` and running
-# `bashy skill run skill --target send` by hand agree on stdout and status.
-# A skill with no tasks.md keeps only the three verbs — see skill.bsh.
+# A skill that names its own tasks.md explicitly, via `metadata.tasks:` —
+# the same pointer convention `skills run --target` already resolves (never
+# an implicit scan of whatever tasks.md the caller's directory happens to
+# carry, which would graft methods onto an unrelated skill, see skill.bsh
+# sharing this directory). The alias answers `methods` from the skill's own
+# three verbs (`verify`, `probe`, `run`) PLUS one method per tasks.md
+# target — `send()` here, from the `### send` heading's own `Effects:`
+# line. Each is `bashy skill run skill --target <name>` under the hood, so
+# calling `s.send()` and running `bashy skill run skill --target send` by
+# hand agree on stdout and status. A skill with no `tasks:` pointer keeps
+# only the three verbs — see skill.bsh, which sits beside this same
+# tasks.md and stays untasked precisely because it never names it.
 
 ~~~skill as s
 ---
 name: skill
 description: Greet whoever is reading, verifiably.
+metadata:
+  tasks: tasks.md
 ---
 # skill
 
