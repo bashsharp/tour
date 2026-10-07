@@ -1,0 +1,2 @@
+# rc=126
+oracle.run: declared effects exec,net,spend exceed the guard (exec,net,spend not allowed by read)

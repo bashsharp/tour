@@ -7,6 +7,7 @@ name: fleet-tour-model
 @ensure('test "$RESULT" = "recorded answer"')
 agentic func query() string {
   answer, err := oracle.run("Return the recorded answer")
+  if err != nil { echo "$answer"; panic(err); }
   return answer
 }
-agentic { answer := query(); echo "$answer"; }
+agentic { answer := query(); status=$?; if [ "$status" -ne 0 ]; then exit "$status"; fi; echo "$answer"; }

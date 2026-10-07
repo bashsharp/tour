@@ -1,3 +1,4 @@
 #!/usr/bin/env -S bashy --bashsharp
 # Offline transport fixture: ignore the incoming model prompt.
-printf '%s\n' 'recorded answer'
+printf '%s\n' invoked >> "$FLEET_TOUR_CALL_LOG"
+printf '%s' 'recorded answer'

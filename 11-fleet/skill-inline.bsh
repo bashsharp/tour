@@ -9,5 +9,15 @@ description: Return the recorded greeting for the fleet tour.
 Say `recorded answer`. This prose skill is validated, not model-executed.
 ~~~
 
-report := oracle.verify()
-echo "$report" | grep -E '^(valid|applicable):'
+@guard(effects: "read")
+@ensure('test "$RESULT" = "valid: true
+applicable: true"')
+func query() string {
+  report := oracle.verify()
+  summary=$(echo "$report" | grep -E '^(valid|applicable):')
+  return summary
+}
+answer := query()
+status=$?
+if [ "$status" -ne 0 ]; then exit "$status"; fi
+echo "$answer"

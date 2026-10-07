@@ -1,6 +1,7 @@
 # id	mode	file	needs	rc	xfail
 # mode: run = bashy --bashsharp FILE · off = bashy --no-bashsharp FILE · posix = bashy --posix FILE
 #       gosrc = bashy --bashsharp --source=go FILE · check = bashy check --bashsharp FILE
+#       fleet = run with a private catalog and local recorded transport (11-fleet/fixtures/run.sh)
 # needs: - | python3 | typescript | cargo | cc | c++ | go | podman — what bashy PROVISIONS
 #        for the case (pinned, verified, cached on first use); never a reason to skip.
 #        podman is the one exception in kind: bashy provisions the engine, but a machine
@@ -54,3 +55,14 @@ manifests/gomod	run	09-fences-advanced/manifests/gomod/build.bsh	go	0
 manifests/makefile	run	09-fences-advanced/manifests/makefile/build.bsh	-	0
 manifests/package	run	09-fences-advanced/manifests/package/build.bsh	typescript	0
 windows/guide	run	10-windows/workflow.bsh	pwsh	0
+fleet/model-inline	fleet	11-fleet/model-inline.bsh	-	0
+fleet/model-embed	fleet	11-fleet/model-embed.bsh	-	0
+fleet/tool-inline	fleet	11-fleet/tool-inline.bsh	-	0
+fleet/tool-embed	fleet	11-fleet/tool-embed.bsh	-	0
+fleet/agent-inline	fleet	11-fleet/agent-inline.bsh	-	0
+fleet/agent-embed	fleet	11-fleet/agent-embed.bsh	-	0
+fleet/skill-inline	fleet	11-fleet/skill-inline.bsh	-	0
+fleet/skill-embed	fleet	11-fleet/skill-embed.bsh	-	0
+fleet/agent-denied	fleet	11-fleet/agent-denied.bsh	-	1
+fleet/model-read-denied	fleet	11-fleet/model-read-denied.bsh	-	126
+fleet/model-ensure-denied	fleet	11-fleet/model-ensure-denied.bsh	-	3

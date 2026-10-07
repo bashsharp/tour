@@ -8,6 +8,7 @@
 #   ./check.sh /path/to/bashy        # another binary
 #   BASHSHARP_FLAG=--bashpp ./check.sh        # a binary older than the rename
 #   BASHSHARP_SH_ROOT=/path/to/sh ./check.sh  # also build the lowered Go (needs go >= 1.27)
+#   TOUR_FILTER=fleet/ ./check.sh /path/to/bashy  # offline fleet fixtures only
 #   ./check.sh --pin                 # re-pin every transcript from this binary (maintainers)
 #
 # No toolchain is needed on the host: bashy provisions what an island uses
@@ -22,7 +23,7 @@
 set -u
 here=$(cd "$(dirname "$0")" && pwd)
 export BASHY_HINTS=off
-pin=0; bashy=bashy
+pin=0; bashy=bashy; only=${TOUR_FILTER:-}
 for a in "$@"; do case "$a" in --pin) pin=1 ;; *) bashy=$a ;; esac; done
 case "$bashy" in
 /*|[A-Za-z]:*) ;;                                                        # already absolute (unix, or a Windows drive path)
@@ -51,7 +52,7 @@ pass=0; fail=0; skip=0; xfail=0; rc=0
 # a first-use download prints its notes, and a transcript must not depend on
 # whether this machine has run an island before. Optional for a person; the
 # gate does it so its diffs are only ever about the program.
-if "$bashy" check --help 2>/dev/null | grep -q -- --prepare; then
+if [ -z "$only" ] && "$bashy" check --help 2>/dev/null | grep -q -- --prepare; then
     echo "tour: provisioning the island toolchains (bashy check --prepare; cached after the first run)"
     # Relative paths from the tour root: a Windows bashy spells $here in
     # MSYS form, which the OS cannot open and a glob does not expand.
@@ -73,10 +74,11 @@ unset GITHUB_ACTIONS CI
 # host has none on PATH; its first-run fetch note must not land in a transcript
 # either, so warm it on Linux the way `check --prepare` warms the islands. On
 # macOS/Windows without a machine the cases are known-failing (see cases.tsv).
-case "$osname" in linux) "$bashy" podman version >/dev/null 2>&1 || true ;; esac
+case "$osname:$only" in linux:) "$bashy" podman version >/dev/null 2>&1 || true ;; esac
 invoke() { # mode file -> runs in the file's directory, prints stdout+stderr, returns status
     dir=$(dirname "$here/$2"); base=$(basename "$2")
     case "$1" in
+    fleet) (cd "$dir" && sh ./fixtures/run.sh "$bashy" "$flag" "$base" 2>&1) ;;
     run)   (cd "$dir" && "$bashy" "$flag" "$base" 2>&1) ;;
     off)   (cd "$dir" && "$bashy" "$noflag" "$base" 2>&1) ;;
     posix) (cd "$dir" && "$bashy" --posix "$base" 2>&1) ;;
@@ -105,6 +107,7 @@ report() { # id expected-file actual-text actual-rc expected-rc xfail-spec
 
 while IFS="$(printf '\t')" read -r id mode file needs want_rc xfail_spec; do
     case "$id" in ''|'#'*) continue ;; esac
+    case "$id" in "$only"*) ;; *) continue ;; esac
     exp="$here/${file%.*}.expected"
     [ "$mode" = off ] && exp="$here/${file%.*}.off.expected"
     out=$(invoke "$mode" "$file"); got=$?
@@ -117,7 +120,7 @@ done < "$here/cases.tsv"
 # The lowered build of 03-go/04-transpile.bsh: builds the emitted Go with
 # bashy's own provisioned Go (`bashy go`, >= 1.27) and needs a checkout of
 # github.com/qiangli/sh (the emitted Go imports its shellrt runtime).
-if [ "$pin" -eq 0 ]; then
+if [ "$pin" -eq 0 ] && [ -z "$only" ]; then
     if [ -z "${BASHSHARP_SH_ROOT:-}" ] || [ ! -d "$BASHSHARP_SH_ROOT/lower/shellrt" ]; then
         echo "tour: SKIP go/transpile-lowered (set BASHSHARP_SH_ROOT to a github.com/qiangli/sh checkout: the lowered program imports its shellrt runtime)"; skip=$((skip+1))
     else
@@ -136,5 +139,6 @@ if [ "$pin" -eq 0 ]; then
 fi
 
 [ "$pin" -eq 1 ] && exit 0
+[ "$pass$fail$xfail" = 000 ] && { echo "tour: no cases matched $only" >&2; exit 1; }
 echo "tour: $pass passed, $fail failed, $skip skipped, $xfail known-failing ($("$bashy" --version 2>/dev/null | head -1))"
 exit $rc
