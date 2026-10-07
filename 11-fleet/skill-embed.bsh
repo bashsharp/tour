@@ -1,0 +1,5 @@
+#!/usr/bin/env -S bashy --bashsharp
+embed skill "./fixtures/SKILL.md" as oracle
+
+report := oracle.verify()
+echo "$report" | grep -E '^(valid|applicable):'
