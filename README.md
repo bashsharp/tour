@@ -414,6 +414,7 @@ it needs input from you.
 | `07-commands/` | your own commands | `register.bsh` (a registered command with a contract, in a scratch ring) |
 | `08-text-fences/` | Text fences (binary alone) | `runner`, `dag`, `skill`, `registered` + `words` |
 | `09-fences-advanced/` | Fences, advanced (provisioned tools, an engine) | `builder`, `dockerfile`, `k8s`, `manifests/{pyproject,gomod,makefile,package}` |
+| [`11-fleet/`](11-fleet/) | Fleet definitions, inline and embedded (offline fixtures) | `model`, `tool`, `agent`, `skill`; governed calls and judged results |
 | `check.sh` + `cases.tsv` | the gate | every file above, its mode, its needs, its exit status |
 | `SKILL.md` | the agent's tour | |
 

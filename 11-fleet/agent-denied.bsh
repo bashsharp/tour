@@ -1,0 +1,3 @@
+#!/usr/bin/env -S bashy --bashsharp
+embed agent "./fixtures/agent.yaml" as oracle
+answer, err := oracle.run("Return the recorded answer")

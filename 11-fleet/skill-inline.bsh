@@ -1,0 +1,23 @@
+#!/usr/bin/env -S bashy --bashsharp
+~~~skill as oracle
+---
+name: fleet-tour
+description: Return the recorded greeting for the fleet tour.
+---
+# Fleet tour
+
+Say `recorded answer`. This prose skill is validated, not model-executed.
+~~~
+
+@guard(effects: "read")
+@ensure('test "$RESULT" = "valid: true
+applicable: true"')
+func query() string {
+  report := oracle.verify()
+  summary=$(echo "$report" | grep -E '^(valid|applicable):')
+  return summary
+}
+answer := query()
+status=$?
+if [ "$status" -ne 0 ]; then exit "$status"; fi
+echo "$answer"

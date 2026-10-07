@@ -1,0 +1,2 @@
+# rc=1
+agent-denied.bsh: line 3: oracle.run: agentic action requires an explicit agentic { ...; } scope

@@ -1,0 +1,13 @@
+#!/usr/bin/env -S bashy --bashsharp
+~~~model as oracle
+name: fleet-tour-model
+~~~
+
+@guard(effects: "read,exec,net,spend")
+@ensure('test "$RESULT" = "recorded answer"')
+agentic func query() string {
+  answer, err := oracle.run("Return the recorded answer")
+  if err != nil { echo "$answer"; panic(err); }
+  return answer
+}
+agentic { answer := query(); status=$?; if [ "$status" -ne 0 ]; then exit "$status"; fi; echo "$answer"; }

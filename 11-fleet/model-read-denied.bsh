@@ -1,0 +1,8 @@
+#!/usr/bin/env -S bashy --bashsharp
+embed model "./fixtures/model.yaml" as oracle
+
+@guard(effects: "read")
+agentic func query() {
+  answer, err := oracle.run("Return the recorded answer")
+}
+agentic { query(); }

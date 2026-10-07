@@ -1,0 +1,15 @@
+#!/usr/bin/env -S bashy --bashsharp
+embed skill "./fixtures/SKILL.md" as oracle
+
+@guard(effects: "read")
+@ensure('test "$RESULT" = "valid: true
+applicable: true"')
+func query() string {
+  report := oracle.verify()
+  summary=$(echo "$report" | grep -E '^(valid|applicable):')
+  return summary
+}
+answer := query()
+status=$?
+if [ "$status" -ne 0 ]; then exit "$status"; fi
+echo "$answer"

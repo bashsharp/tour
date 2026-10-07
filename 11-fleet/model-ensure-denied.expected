@@ -1,0 +1,2 @@
+# rc=3
+query: postcondition failed: test "$RESULT" = "a different answer"
