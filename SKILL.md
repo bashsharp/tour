@@ -62,7 +62,7 @@ And the person sets the pace — you show, run, explain, and **wait**.
 
 | chapter | run | what to point at |
 |---|---|---|
-| `00-quickstart/judge.bsh` | `bashy --bashsharp 00-quickstart/judge.bsh` | six calls, six exit codes **0 3 3 1 1 6**; `6` is a *yield* |
+| `00-quickstart/judge.bsh` | `bashy --bashsharp 00-quickstart/judge.bsh` | six calls, six exit codes **0 3 3 126 1 6**; `6` is a *yield* |
 | `01-bash/bash-is-bash.bsh` | run with `--bashsharp` AND with `--no-bashsharp` | identical — a Bash 5.3 script means the same thing either way |
 | `02-posix/posix-script.sh` | `bashy --posix 02-posix/posix-script.sh` | POSIX through the same engine and the pure-Go coreutils |
 | `02-posix/dialect-is-inert.bsh` | `bashy --posix 02-posix/dialect-is-inert.bsh` | `x: command not found` — under `--posix` the dialect does not exist |
