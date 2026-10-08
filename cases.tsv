@@ -56,14 +56,14 @@ manifests/gomod	run	09-fences-advanced/manifests/gomod/build.bsh	go	0
 manifests/makefile	run	09-fences-advanced/manifests/makefile/build.bsh	-	0
 manifests/package	run	09-fences-advanced/manifests/package/build.bsh	typescript	0
 windows/guide	run	10-windows/workflow.bsh	pwsh	0
-fleet/model-inline	fleet	11-fleet/model-inline.bsh	-	0
-fleet/model-embed	fleet	11-fleet/model-embed.bsh	-	0
-fleet/tool-inline	fleet	11-fleet/tool-inline.bsh	-	0
-fleet/tool-embed	fleet	11-fleet/tool-embed.bsh	-	0
-fleet/agent-inline	fleet	11-fleet/agent-inline.bsh	-	0
-fleet/agent-embed	fleet	11-fleet/agent-embed.bsh	-	0
-fleet/skill-inline	fleet	11-fleet/skill-inline.bsh	-	0
-fleet/skill-embed	fleet	11-fleet/skill-embed.bsh	-	0
-fleet/agent-denied	fleet	11-fleet/agent-denied.bsh	-	1
-fleet/model-read-denied	fleet	11-fleet/model-read-denied.bsh	-	126
-fleet/model-ensure-denied	fleet	11-fleet/model-ensure-denied.bsh	-	3
+fleet/model-inline	fleet	11-fleet/model-inline.bsh	-	0	windows=todo:79d2994c
+fleet/model-embed	fleet	11-fleet/model-embed.bsh	-	0	windows=todo:79d2994c
+fleet/tool-inline	fleet	11-fleet/tool-inline.bsh	-	0	windows=todo:79d2994c
+fleet/tool-embed	fleet	11-fleet/tool-embed.bsh	-	0	windows=todo:79d2994c
+fleet/agent-inline	fleet	11-fleet/agent-inline.bsh	-	0	windows=todo:79d2994c
+fleet/agent-embed	fleet	11-fleet/agent-embed.bsh	-	0	windows=todo:79d2994c
+fleet/skill-inline	fleet	11-fleet/skill-inline.bsh	-	0	windows=todo:79d2994c
+fleet/skill-embed	fleet	11-fleet/skill-embed.bsh	-	0	windows=todo:79d2994c
+fleet/agent-denied	fleet	11-fleet/agent-denied.bsh	-	1	windows=todo:79d2994c
+fleet/model-read-denied	fleet	11-fleet/model-read-denied.bsh	-	126	windows=todo:79d2994c
+fleet/model-ensure-denied	fleet	11-fleet/model-ensure-denied.bsh	-	3	windows=todo:79d2994c
