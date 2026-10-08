@@ -184,7 +184,6 @@ the Go-corpus numbers are measured — and how a file lowers back to ordinary Go
 ```sh
 bashy git clone https://github.com/qiangli/bashy
 cd bashy
-bashy scripts/bootstrap-siblings.sh
 bashy dag build          # -> bin/bashy (bin/bashy.exe on Windows); Go is provisioned by bashy
 ```
 
