@@ -26,5 +26,9 @@ bashy -c 'type shout'
 bashy -c 'shout hello';      echo "hello   -> $?"
 bashy -c 'shout ""';         echo "empty   -> $?"     # the contract refuses it before the body runs
 bashy commands list | tail -1
+# A registered command is retired before it is removed (replace-before-remove:
+# releases since v1.0.0 warn on removing an entry that is still live). Quiet
+# here so the output is the same on releases that predate `commands retire`.
+bashy commands retire shout >/dev/null 2>&1
 bashy commands rm shout
 bashy -c 'shout hello' 2>/dev/null; echo "removed -> $?"
