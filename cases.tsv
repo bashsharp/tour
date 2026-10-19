@@ -62,8 +62,8 @@ fleet/tool-inline	fleet	11-fleet/tool-inline.bsh	-	0	windows=todo:79d2994c
 fleet/tool-embed	fleet	11-fleet/tool-embed.bsh	-	0	windows=todo:79d2994c
 fleet/agent-inline	fleet	11-fleet/agent-inline.bsh	-	0	windows=todo:79d2994c
 fleet/agent-embed	fleet	11-fleet/agent-embed.bsh	-	0	windows=todo:79d2994c
-fleet/skill-inline	fleet	11-fleet/skill-inline.bsh	-	0	windows=todo:79d2994c
-fleet/skill-embed	fleet	11-fleet/skill-embed.bsh	-	0	windows=todo:79d2994c
-fleet/agent-denied	fleet	11-fleet/agent-denied.bsh	-	1	windows=todo:79d2994c
-fleet/model-read-denied	fleet	11-fleet/model-read-denied.bsh	-	126	windows=todo:79d2994c
+fleet/skill-inline	fleet	11-fleet/skill-inline.bsh	-	0
+fleet/skill-embed	fleet	11-fleet/skill-embed.bsh	-	0
+fleet/agent-denied	fleet	11-fleet/agent-denied.bsh	-	1
+fleet/model-read-denied	fleet	11-fleet/model-read-denied.bsh	-	126
 fleet/model-ensure-denied	fleet	11-fleet/model-ensure-denied.bsh	-	3	windows=todo:79d2994c
