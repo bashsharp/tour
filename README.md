@@ -33,32 +33,12 @@ agent](#learning-with-an-ai-agent).
 
 ## Install bashy (two minutes)
 
-One static binary, no dependencies. Pick your platform:
+Install bashy using the canonical platform commands in the
+[bashy install guide](https://github.com/qiangli/bashy#install-bashy). The
+script, Homebrew and Scoop channels install bashy and outpost together; the
+guide also covers Linux archives and the v1.0 unsigned-binary prompts.
 
-**macOS (Apple Silicon)**
-```sh
-curl -fsSLO https://github.com/qiangli/bashy/releases/latest/download/bashy-darwin-arm64.tar.gz
-tar -xzf bashy-darwin-arm64.tar.gz
-sudo install bashy /usr/local/bin/bashy
-```
-(Intel Mac: replace `arm64` with `amd64`.)
-
-**Linux (x86-64)**
-```sh
-curl -fsSLO https://github.com/qiangli/bashy/releases/latest/download/bashy-linux-amd64.tar.gz
-tar -xzf bashy-linux-amd64.tar.gz
-sudo install bashy /usr/local/bin/bashy
-```
-(ARM64: replace `amd64` with `arm64`.)
-
-**Windows (PowerShell)**
-```powershell
-Invoke-WebRequest https://github.com/qiangli/bashy/releases/latest/download/bashy-windows-amd64.zip -OutFile bashy.zip
-Expand-Archive bashy.zip -DestinationPath "$env:LOCALAPPDATA\bashy"
-$env:Path += ";$env:LOCALAPPDATA\bashy"      # add it permanently via System Settings → Environment Variables
-```
-
-Then:
+Then check:
 ```sh
 bashy --version        # bashy, GNU Bash 5.3 compatible, version 5.3.0(1)-bashy-...
 ```
