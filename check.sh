@@ -132,7 +132,13 @@ if [ "$pin" -eq 0 ] && [ -z "$only" ]; then
     if [ -n "${BASHSHARP_SH_ROOT:-}" ] && [ -d "$BASHSHARP_SH_ROOT/lower/shellrt" ]; then
         sh_replace="$BASHSHARP_SH_ROOT"
     else
-        sh_ver=$(GOWORK=off GOFLAGS=-mod=mod "$bashy" go mod download -json 'github.com/qiangli/sh/v3@latest' 2>>"$build_dir/log" | sed -n 's/.*"Version": "\(v[^"]*\)".*/\1/p' | head -n 1)
+        # Prefer the fork commit bashy itself was built with (its go.mod
+        # replace, recorded in build info); @latest is only the fallback
+        # for devel builds where build info carries no version.
+        bashy_path=$(command -v "$bashy" 2>/dev/null || printf '%s' "$bashy")
+        sh_ver=$("$bashy" go version -m "$bashy_path" 2>>"$build_dir/log" | sed -n 's/.*github\.com\/qiangli\/sh\/v3 \(v[^ ]*\).*/\1/p' | head -n 1)
+        [ -n "${sh_ver:-}" ] || sh_ver=latest
+        sh_ver=$(GOWORK=off GOFLAGS=-mod=mod "$bashy" go mod download -json "github.com/qiangli/sh/v3@$sh_ver" 2>>"$build_dir/log" | sed -n 's/.*"Version": "\(v[^"]*\)".*/\1/p' | head -n 1)
         [ -n "${sh_ver:-}" ] && sh_replace="github.com/qiangli/sh/v3 $sh_ver"
     fi
     if [ -z "${sh_replace:-}" ]; then
