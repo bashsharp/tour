@@ -67,7 +67,7 @@ time (a CI image, an air-gapped box) and is a no-op after that.
 | the Rust island | a rustup `stable` toolchain, linked through zig cc | MIT/Apache-2.0 |
 | the C and C++ islands | `zig cc` / `zig c++` — Clang with bundled libc headers, so no SDK to find | MIT |
 | the PowerShell and C# islands, `10-windows/workflow.bsh` | PowerShell 7.6.6 — one pinned archive per platform, digest-verified on first use (C# compiles through `Add-Type` inside it, no SDK) | MIT (per-archive inventory in the bashy repo's `docs/fence-toolchain-licenses.md`; the Windows archives add closed Microsoft natives the common notice does not rule on) |
-| the lowered build of `04-transpile` | the same Go, plus a checkout of `qiangli/sh` (`BASHSHARP_SH_ROOT`) | — |
+| the lowered build of `04-transpile` | the same Go, plus the `qiangli/sh` fork resolved from the module proxy (a `BASHSHARP_SH_ROOT` checkout wins when set) | — |
 | `09-fences-advanced/builder.bsh` | the same zig (`bashy zig`) | MIT |
 | `09-fences-advanced/manifests/*` | the same Go, uv/CPython, Node | as above |
 | `09-fences-advanced/dockerfile.bsh`, `k8s.bsh` | podman (`bashy podman`, an upstream release) — **and a running machine**: `bashy podman machine start` on macOS/Windows | Apache-2.0 |

@@ -7,7 +7,7 @@
 #   ./check.sh                       # the bashy on PATH
 #   ./check.sh /path/to/bashy        # another binary
 #   BASHSHARP_FLAG=--bashpp ./check.sh        # a binary older than the rename
-#   BASHSHARP_SH_ROOT=/path/to/sh ./check.sh  # also build the lowered Go (needs go >= 1.27)
+#   BASHSHARP_SH_ROOT=/path/to/sh ./check.sh  # the lowered Go prefers this checkout (else the sh fork resolves from the proxy)
 #   TOUR_FILTER=fleet/ ./check.sh /path/to/bashy  # offline fleet fixtures only
 #   ./check.sh --pin                 # re-pin every transcript from this binary (maintainers)
 #
@@ -118,17 +118,29 @@ while IFS="$(printf '\t')" read -r id mode file needs want_rc xfail_spec; do
 done < "$here/cases.tsv"
 
 # The lowered build of 03-go/04-transpile.bsh: builds the emitted Go with
-# bashy's own provisioned Go (`bashy go`, >= 1.27) and needs a checkout of
-# github.com/qiangli/sh (the emitted Go imports its shellrt runtime).
+# bashy's own provisioned Go (`bashy go`, >= 1.27). The emitted Go imports
+# the shellrt runtime (mvdan.cc/sh/v3/lower/shellrt), which lives in the
+# qiangli/sh fork, so the per-run module replaces that import with the
+# fork: a BASHSHARP_SH_ROOT checkout when one is at hand, else the fork
+# resolved from the module proxy with bashy's own Go — no manual setup,
+# and nothing SKIPs for a missing checkout.
 if [ "$pin" -eq 0 ] && [ -z "$only" ]; then
-    if [ -z "${BASHSHARP_SH_ROOT:-}" ] || [ ! -d "$BASHSHARP_SH_ROOT/lower/shellrt" ]; then
-        echo "tour: SKIP go/transpile-lowered (set BASHSHARP_SH_ROOT to a github.com/qiangli/sh checkout: the lowered program imports its shellrt runtime)"; skip=$((skip+1))
+    # Go 1.27 ignores a go.mod below the Windows system Temp root.  Keep
+    # this per-run module in the writable Tour checkout instead.
+    build_dir=$(mktemp -d "$here/.tour-go-build.XXXXXX"); trap 'rm -rf "$build_dir"' EXIT
+    : >"$build_dir/log"
+    if [ -n "${BASHSHARP_SH_ROOT:-}" ] && [ -d "$BASHSHARP_SH_ROOT/lower/shellrt" ]; then
+        sh_replace="$BASHSHARP_SH_ROOT"
     else
-        # Go 1.27 ignores a go.mod below the Windows system Temp root.  Keep
-        # this per-run module in the writable Tour checkout instead.
-        build_dir=$(mktemp -d "$here/.tour-go-build.XXXXXX"); trap 'rm -rf "$build_dir"' EXIT
-        printf 'module tour\n\ngo 1.27\n\nrequire mvdan.cc/sh/v3 v3.0.0\nreplace mvdan.cc/sh/v3 => %s\n' "$BASHSHARP_SH_ROOT" >"$build_dir/go.mod"
-        if (cd "$build_dir" && GOFLAGS=-mod=mod "$bashy" transpile "$flag" "$here/03-go/04-transpile.bsh" -o "$build_dir/t.go" >"$build_dir/log" 2>&1 \
+        sh_ver=$(GOWORK=off GOFLAGS=-mod=mod "$bashy" go mod download -json 'github.com/qiangli/sh/v3@latest' 2>>"$build_dir/log" | sed -n 's/.*"Version": "\(v[^"]*\)".*/\1/p' | head -n 1)
+        [ -n "${sh_ver:-}" ] && sh_replace="github.com/qiangli/sh/v3 $sh_ver"
+    fi
+    if [ -z "${sh_replace:-}" ]; then
+        echo "tour: FAIL go/transpile-lowered (no BASHSHARP_SH_ROOT checkout, and the qiangli/sh fork did not resolve from the module proxy)" >&2
+        cat "$build_dir/log" >&2; fail=$((fail+1)); rc=1
+    else
+        printf 'module tour\n\ngo 1.27\n\nrequire mvdan.cc/sh/v3 v3.0.0\nreplace mvdan.cc/sh/v3 => %s\n' "$sh_replace" >"$build_dir/go.mod"
+        if (cd "$build_dir" && GOFLAGS=-mod=mod "$bashy" transpile "$flag" "$here/03-go/04-transpile.bsh" -o "$build_dir/t.go" >>"$build_dir/log" 2>&1 \
              && GOWORK=off GOFLAGS=-mod=mod "$bashy" go build -o program t.go >>"$build_dir/log" 2>&1) \
            && out=$("$build_dir/program" 2>&1) && [ "$out" = "$(sed 1d "$here/03-go/04-transpile.expected")" ]; then
             echo "tour: PASS go/transpile-lowered (built as Go, same transcript)"; pass=$((pass+1))

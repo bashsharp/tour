@@ -5,9 +5,9 @@
 #     bashy transpile --bashsharp 10-transpile.bsh -o 10-transpile.go
 #     go run 10-transpile.go
 #
-# Lowering needs a Go toolchain of at least 1.27 on PATH; check.sh SKIPs this
-# section (and says why) when there is none. Running the file directly needs
-# nothing.
+# Building the lowered Go needs a Go toolchain of at least 1.27 plus the
+# shellrt runtime from the qiangli/sh fork; check.sh resolves both with
+# bashy's own Go, no manual setup. Running the file directly needs nothing.
 
 func twice(n int) int { return n * 2 }
 func greet(name string, retries int = 3) {
