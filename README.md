@@ -404,6 +404,8 @@ maintainers, after a deliberate change, never to make a red check green.
 
 - [`qiangli/bashy`](https://github.com/qiangli/bashy) — the product you
   install; Bash# is what `bashy --bashsharp` speaks.
+- [Software shaping](https://github.com/qiangli/bashy/blob/main/docs/software-shaping.md) —
+  the shaping lifecycle in bashy; Bash# is the language shapes are written in.
 - [`bashsharp/bashsharp`](https://github.com/bashsharp/bashsharp) — the
   language: the five clauses with their gates, design decisions, `ROADMAP.md`,
   `rfcs/`, `docs/claims.md`.
